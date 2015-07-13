@@ -347,6 +347,12 @@ $(document).ready(function () {
         changeMonth: true,
         changeYear: true
     });
+    $('.datepickerDOB').datepicker({
+        dateFormat: dateFormat,
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "-70:-1"
+    });
 
     /* Start - Initialize jQuery DatePicker */
 
@@ -463,6 +469,31 @@ $(document).ready(function () {
     /* End - phoneNumber*/
 
     /* Start - checkNoneSelectedAlone*/
+
+    //start phone number validation
+    var validatePhoneNumber = function (value,element) {
+        if ($.fn.isNotRequiredAndEmpty(value, element)){
+            return true;
+        }else if (value.substring(0,2) == "07") {
+            if (/^\d{10}$/.test(value)) {
+                return true;
+            }else{
+                return false;
+            }
+        } else {
+            return false;
+        }
+    };
+
+    $.validator.addMethod("checkPhoneNumber", function (value, element) {
+            return validatePhoneNumber(value,element);
+        }, "Please enter a valid phone number (start with 07...)."
+    );
+
+    // attach 'phone' class to perform validation.
+    jQuery.validator.addClassRules({
+        checkPhoneNumber: { checkPhoneNumber: true }
+    });
 
     $.fn.checkNoneSelectedAlone = function (nameArray) {
         var $validator = $('form').validate();

@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
+import com.futronictech.SDKHelper.UsbDeviceDataExchangeImpl;
 import com.muzima.MuzimaApplication;
 import com.muzima.R;
 import com.muzima.adapters.ListAdapter;
@@ -70,6 +72,7 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
     private Button searchServerBtn;
     private SearchView searchView;
     private boolean intentBarcodeResults = false;
+    private UsbDeviceDataExchangeImpl usbDeviceDataExchange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +105,11 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
                 startActivity(intent);
             }
         });
+
+        if (isNotificationsList)
+            searchServerBtn.setVisibility(View.GONE);
+        usbDeviceDataExchange = new UsbDeviceDataExchangeImpl(this, mHandler);
+
         if (isNotificationsList)
             searchServerBtn.setVisibility(View.GONE);
     }
@@ -200,6 +208,10 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
             case R.id.scan:
                 invokeBarcodeScan();
                 return true;
+
+            case R.id.fingerprint:
+                invokeFingerprintScan();
+                return true;
             case R.id.menu_load:
                 if (notificationsSyncInProgress) {
                     Toast.makeText(this, "Action not allowed while sync is in progress", Toast.LENGTH_SHORT).show();
@@ -293,6 +305,7 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
     }
 
 
+
     public void hideProgressbar() {
         menubarSyncButton.setActionView(null);
     }
@@ -348,6 +361,23 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
         scanIntegrator.initiateScan();
     }
 
+    public void invokeFingerprintScan() {
+        try {
+            if (usbDeviceDataExchange.OpenDevice(0, true)) {
+                finish();
+                Intent i = new Intent(getApplicationContext(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
+                i.putExtra("action", 2);
+                startActivity(i);
+            } else {
+                if (!usbDeviceDataExchange.IsPendingOpen()) {
+                    showMessageDialog("Cannot start fingerprint operation.\n" +
+                            "Scanner device is not connected, please connect");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
@@ -362,6 +392,40 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
 
 
     }
+
+    private void showMessageDialog(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(com.muzima.view.patients.PatientsListActivity.this);
+        builder
+                .setCancelable(true)
+                .setIcon(getResources().getDrawable(R.drawable.ic_warning))
+                .setTitle("Information")
+                .setMessage("" + msg)
+                .setNegativeButton("Ok", null).create().show();
+    }
+
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case UsbDeviceDataExchangeImpl.MESSAGE_ALLOW_DEVICE: {
+
+                    if (usbDeviceDataExchange.ValidateContext()) {
+                        Intent i = new Intent(getApplicationContext(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
+                        i.putExtra("action", 2);
+                        startActivity(i);
+                    } else {
+                        showMessageDialog("Cannot start fingerprint operation.\n" +
+                                "Scanner device is not connected, please connect");
+                    }
+                    break;
+                }
+                case UsbDeviceDataExchangeImpl.MESSAGE_DENY_DEVICE: {
+                    showMessageDialog("User deny scanner device");
+                    break;
+                }
+            }
+        }
+    };
 
 
 }

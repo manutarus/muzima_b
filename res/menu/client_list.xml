@@ -21,4 +21,9 @@
 			android:icon="@drawable/ic_action_add_client"
 			android:showAsAction="always"
 			android:title="@string/client_search"/>
+	<item
+			android:id="@+id/fingerprint"
+			android:icon="@drawable/fingerprint_scan"
+			android:showAsAction="always"
+			android:title="@string/client_scan_fingerprint"/>
 </menu>

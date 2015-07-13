@@ -124,6 +124,11 @@ public class PatientSummaryActivity extends BaseActivity {
         int genderDrawable = patient.getGender().equalsIgnoreCase("M") ? R.drawable.ic_male : R.drawable.ic_female;
         genderIcon.setImageDrawable(getResources().getDrawable(genderDrawable));
 
+        if(patient.getAttribute("Contact Phone Number")!=null) {
+            TextView phone = (TextView) findViewById(R.id.phone);
+            phone.setText("Tel: "+patient.getAttribute("Contact Phone Number").getAttribute());
+        }
+
         TextView dob = (TextView) findViewById(R.id.dob);
         dob.setText("DOB: " + getFormattedDate(patient.getBirthdate()));
 

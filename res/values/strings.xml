@@ -77,6 +77,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="client_search">Search Name or ID</string>
+    <string name="client_scan_fingerprint">Scan Clients Fingerprint</string>
 	<string name="client_scan">Scan Clients ID</string>
     <string name="observation_search">Search Observations</string>
 
@@ -98,6 +99,7 @@
     <string name="title_activity_encounter_summary">Observations</string>
     <string name="title_login">Please Log In</string>
     <string name="title_activity_cohort_pref">Cohort Prefixes</string>
+    <string name="summary">Summary</string>
 
     <string name="textview_login_username">Username:</string>
     <string name="textview_login_password">Password:</string>

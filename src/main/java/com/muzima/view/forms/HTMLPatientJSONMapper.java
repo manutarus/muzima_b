@@ -9,19 +9,16 @@
 package com.muzima.view.forms;
 
 import android.util.Log;
-import com.muzima.api.model.FormData;
-import com.muzima.api.model.Patient;
-import com.muzima.api.model.PatientIdentifier;
-import com.muzima.api.model.PatientIdentifierType;
-import com.muzima.api.model.PersonName;
-import com.muzima.api.model.User;
+import com.muzima.api.model.*;
 import com.muzima.utils.Constants;
 import com.muzima.utils.DateUtils;
+import com.muzima.utils.ObsInterface;
 import com.muzima.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,7 +95,11 @@ public class HTMLPatientJSONMapper {
         setPatientIdentifiers();
         setPatientNames();
         setPatientGender();
-        setPatientBirthDate();
+        setPatientBirthDate();  if(patientJSON.has("patient.fingerprint"))
+            setPatientAttributes();
+        if(patientJSON.has("patient.phone_number"))
+            setPhoneAttribute();
+
     }
 
     private void initializePatient() throws JSONException {
@@ -115,6 +116,17 @@ public class HTMLPatientJSONMapper {
         List<PersonName> names = new ArrayList<PersonName>();
         names.add(getPersonName());
         patient.setNames(names);
+    }
+
+    private void setPatientAttributes() throws JSONException{
+        List<PersonAttribute> attributes = patient.getAtributes();
+        attributes.add(getPersonAttribute());
+        patient.setAttributes(attributes);
+    }
+    private void setPhoneAttribute() throws JSONException{
+        List<PersonAttribute> attributes = patient.getAtributes();
+        attributes.add(getPhoneAttribute());
+        patient.setAttributes(attributes);
     }
 
     private void setPatientGender() throws JSONException {
@@ -209,5 +221,30 @@ public class HTMLPatientJSONMapper {
         personName.setMiddleName(middleName);
 
         return personName;
+    }
+    private PersonAttribute getPersonAttribute() throws JSONException {
+        PersonAttribute personAttribute = new PersonAttribute();
+        PersonAttributeType personAttributeType =new PersonAttributeType();
+        personAttributeType.setName("fingerprint");
+        personAttribute.setAttributeType(personAttributeType);
+        try {
+            personAttribute.setAttribute(new String(ObsInterface.fingerprintResultBytes, "US-ASCII"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return personAttribute;
+    }
+    private PersonAttribute getPhoneAttribute() throws JSONException {
+        PersonAttribute personAttribute = new PersonAttribute();
+        PersonAttributeType personAttributeType =new PersonAttributeType();
+        personAttributeType.setName("Contact Phone Number");
+        personAttribute.setAttributeType(personAttributeType);
+
+        String phoneJSONString = "patient.phone_number";
+        if(patientJSON.has(phoneJSONString))
+            personAttribute.setAttribute(patientJSON.getString(phoneJSONString));
+
+        return personAttribute;
+
     }
 }

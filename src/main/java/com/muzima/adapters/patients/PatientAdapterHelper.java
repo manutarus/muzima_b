@@ -8,7 +8,6 @@
 
 package com.muzima.adapters.patients;
 
-import android.util.Log;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,13 +39,16 @@ public class PatientAdapterHelper extends ListAdapter<Patient> {
             holder.name = (TextView) convertView.findViewById(R.id.name);
             holder.dateOfBirth = (TextView) convertView.findViewById(R.id.dateOfBirth);
             holder.identifier = (TextView) convertView.findViewById(R.id.identifier);
+            holder.phone = (TextView) convertView.findViewById(R.id.phone);
             convertView.setTag(holder);
         }
 
         holder = (ViewHolder) convertView.getTag();
-
         holder.dateOfBirth.setText("DOB: " + getFormattedDate(patient.getBirthdate()));
         holder.identifier.setText(patient.getIdentifier());
+        if(patient.getAttribute("Contact Phone Number")!=null) {
+            holder.phone.setText("Tel: "+patient.getAttribute("Contact Phone Number").getAttribute());
+        }
         holder.name.setText(getPatientFullName(patient));
         holder.genderImg.setImageResource(getGenderImage(patient.getGender()));
         return convertView;
@@ -90,19 +92,7 @@ public class PatientAdapterHelper extends ListAdapter<Patient> {
     }
 
     private String getPatientFullName(Patient patient) {
-        StringBuffer patientFullName = new StringBuffer();
-        if(patient.getFamilyName()!=null) {
-            patientFullName.append(patient.getFamilyName());
-            patientFullName.append(", ");
-        }
-        if(patient.getGivenName() != null){
-            patientFullName.append(patient.getGivenName());
-            patientFullName.append(" ");
-        }
-        if(patient.getMiddleName() != null){
-            patientFullName.append(patient.getMiddleName());
-        }
-        return patientFullName.toString();
+        return patient.getFamilyName() + ", " + patient.getGivenName() + " " + patient.getMiddleName();
     }
 
     private int getGenderImage(String gender) {
@@ -118,5 +108,6 @@ public class PatientAdapterHelper extends ListAdapter<Patient> {
         TextView name;
         TextView dateOfBirth;
         TextView identifier;
+        TextView phone;
     }
 }

@@ -23,7 +23,13 @@
             style="@style/PatientDemographicsLayout"
             android:paddingTop="4dp"
             android:paddingBottom="16dp"
-            android:background="@color/primary_black">
+            android:background="@color/primary_black" android:layout_height="85dp">
+
+        <TextView
+                android:id="@+id/phone"
+                style="@style/DashboardMediumTitleText"
+                android:layout_below="@+id/patientIdentifier"
+                android:layout_alignParentRight="true"/>
 
         <TextView
                 android:id="@+id/dob"
