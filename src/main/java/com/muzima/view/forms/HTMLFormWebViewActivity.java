@@ -40,9 +40,11 @@ import com.muzima.controller.ProviderController;
 import com.muzima.model.BaseForm;
 import com.muzima.model.FormWithData;
 import com.muzima.utils.Constants;
+import com.muzima.utils.ObsInterface;
 import com.muzima.utils.audio.AudioResult;
 import com.muzima.utils.barcode.IntentIntegrator;
 import com.muzima.utils.barcode.IntentResult;
+import com.muzima.utils.fingerprint.futronic.FingerprintResult;
 import com.muzima.utils.imaging.ImageResult;
 import com.muzima.utils.video.VideoResult;
 import com.muzima.view.BroadcastListenerActivity;
@@ -76,6 +78,7 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
     public static final String VIDEO = "videoComponent";
     public static final String FORM = "form";
     public static final String DISCRIMINATOR = "discriminator";
+    public static final String FINGERPRINT = "fingerprintComponent";
     public static final String DEFAULT_AUTO_SAVE_INTERVAL_VALUE_IN_MINS =  "2";
     public static final String DEFAULT_FONT_SIZE =  "Medium";
     public static final boolean IS_LOGGED_IN_USER_DEFAULT_PROVIDER =  false;
@@ -94,10 +97,12 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
     private ImagingComponent imagingComponent;
     private AudioComponent audioComponent;
     private VideoComponent videoComponent;
+    private FingerprintComponent fingerprintComponent;
     private Map<String, String> scanResultMap;
     private Map<String, String> imageResultMap;
     private Map<String, String> audioResultMap;
     private Map<String, String> videoResultMap;
+    private HashMap<String, byte[]> fingerprintResultMap;
     private String sectionName;
     private FormController formController;
     private LocationController locationController;
@@ -122,6 +127,7 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
         imageResultMap = new HashMap<String, String>();
         audioResultMap = new HashMap<String, String>();
         videoResultMap = new HashMap<String, String>();
+        fingerprintResultMap = new HashMap<String, byte[]>();
         setContentView(R.layout.activity_form_webview);
         progressDialog = new MuzimaProgressDialog(this);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -195,28 +201,53 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
 
     @Override
     protected void onResume() {
-        if (scanResultMap != null && !scanResultMap.isEmpty()) {
-            String jsonMap = new JSONObject(scanResultMap).toString();
-            Log.d(TAG, jsonMap);
-            webView.loadUrl("javascript:document.populateBarCode(" + jsonMap + ")");
+        try {
+            if (scanResultMap != null && !scanResultMap.isEmpty()) {
+                String jsonMap = new JSONObject(scanResultMap).toString();
+                Log.d(TAG, jsonMap);
+                webView.loadUrl("javascript:document.populateBarCode(" + jsonMap + ")");
+            }
+        } catch(NullPointerException e) {
+             Log.e(TAG, "Error while getting result", e);
         }
 
-        if (imageResultMap != null && !imageResultMap.isEmpty()) {
-            String jsonMap = new JSONObject(imageResultMap).toString();
-            Log.d(TAG, "Header:" + sectionName + "json:" + jsonMap);
-            webView.loadUrl("javascript:document.populateImage('" + sectionName + "', " + jsonMap + ")");
+        try {
+            if (imageResultMap != null && !imageResultMap.isEmpty()) {
+                String jsonMap = new JSONObject(imageResultMap).toString();
+                Log.d(TAG, "Header:" + sectionName + "json:" + jsonMap);
+                webView.loadUrl("javascript:document.populateImage('" + sectionName + "', " + jsonMap + ")");
+            }
+        } catch(NullPointerException e) {
+             Log.e(TAG, "Error while getting result", e);
         }
 
-        if (audioResultMap != null && !audioResultMap.isEmpty()) {
-            String jsonMap = new JSONObject(audioResultMap).toString();
-            Log.d(TAG, "Header:" + sectionName + "json:" + jsonMap);
-            webView.loadUrl("javascript:document.populateAudio('" + sectionName + "', " + jsonMap + ")");
+        try {
+            if (audioResultMap != null && !audioResultMap.isEmpty()) {
+                String jsonMap = new JSONObject(audioResultMap).toString();
+                Log.d(TAG, "Header:" + sectionName + "json:" + jsonMap);
+                webView.loadUrl("javascript:document.populateAudio('" + sectionName + "', " + jsonMap + ")");
+            }
+        } catch(NullPointerException e) {
+             Log.e(TAG, "Error while getting result", e);
         }
 
-        if (videoResultMap != null && !videoResultMap.isEmpty()) {
-            String jsonMap = new JSONObject(videoResultMap).toString();
-            Log.d(TAG, "Header:" + sectionName + "json:" + jsonMap);
-            webView.loadUrl("javascript:document.populateVideo('" + sectionName + "', " + jsonMap + ")");
+        try {
+            if (videoResultMap != null && !videoResultMap.isEmpty()) {
+                String jsonMap = new JSONObject(videoResultMap).toString();
+                Log.d(TAG, "Header:" + sectionName + "json:" + jsonMap);
+                webView.loadUrl("javascript:document.populateVideo('" + sectionName + "', " + jsonMap + ")");
+            }
+        } catch(NullPointerException e) {
+             Log.e(TAG, "Error while getting result", e);
+        }
+
+        try {
+            if (fingerprintResultMap != null && !fingerprintResultMap.isEmpty()) {
+                String jsonMap = new JSONObject(fingerprintResultMap).toString();
+                webView.loadUrl("javascript:document.populateFingeprint(" + jsonMap + ")");
+            }
+        } catch(NullPointerException e) {
+             Log.e(TAG, "Error while getting result", e);
         }
 
         super.onResume();
@@ -371,6 +402,12 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
             videoResultMap.put(videoComponent.getVideoPathField(), videoResult.getVideoUri());
             videoResultMap.put(videoComponent.getVideoCaptionField(), videoResult.getVideoCaption());
         }
+
+        FingerprintResult fingerprintResult = FingerprintComponent.parseActivityResult(requestCode, resultCode, intent);
+        if (fingerprintResult != null) {
+            fingerprintResultMap.put(fingerprintResult.getSectionName(), ObsInterface.fingerprintResultBytes);
+
+        }
     }
 
     @Override
@@ -443,10 +480,12 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
         imagingComponent = new ImagingComponent(this);
         audioComponent = new AudioComponent(this);
         videoComponent = new VideoComponent(this);
+        fingerprintComponent = new FingerprintComponent(this);
         webView.addJavascriptInterface(barCodeComponent, BARCODE);
         webView.addJavascriptInterface(imagingComponent, IMAGE);
         webView.addJavascriptInterface(audioComponent, AUDIO);
         webView.addJavascriptInterface(videoComponent, VIDEO);
+        webView.addJavascriptInterface(fingerprintComponent, FINGERPRINT);
         webView.addJavascriptInterface(new HTMLFormDataStore(this, formController,locationController, formData, providerController),
                 HTML_DATA_STORE);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);

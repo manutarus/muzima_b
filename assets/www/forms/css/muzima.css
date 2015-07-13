@@ -165,3 +165,14 @@ span.clear{
 .large .btn.image_btn, .large .btn.audio_record_btn, .large .btn.video_record_btn {
     height: 11%;
 }
+
+.fingerprint_btn {
+    height: 18px;
+    width: 7%;
+    display: inline-block;
+    line-height: 18px;
+    padding: 16px 23px;
+    margin-right: 4px !important;
+    border-radius: 4px;
+    background: #ffffff url("../images/fingerprint_scan.png") no-repeat center;
+}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:padding="5dp">
+
+
+		<LinearLayout
+				style="@style/NotClickableSummaryItem"
+				android:layout_height="156dp"
+				android:layout_weight="0.23">
+
+			<ImageView
+					android:id="@+id/imageFinger"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_alignParentRight="true"
+					android:layout_marginRight="10dp"
+					android:contentDescription="fingerprint image"
+					android:layout_gravity="center_horizontal"/>
+
+
+		</LinearLayout>
+
+		<LinearLayout
+				android:id="@+id/navigation"
+				android:layout_alignParentBottom="true"
+				style="@style/ButtonRow"
+				android:layout_width="fill_parent">
+
+			<TextView
+					android:id="@+id/txtMessage"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="5dp"
+					android:hint="Status"
+					android:textColor="@android:color/white"
+					android:textSize="8pt"/>
+
+		</LinearLayout>
+
+
+		<LinearLayout
+				android:id="@+id/navigation2"
+				android:layout_alignParentBottom="true"
+				style="@style/ButtonRow">
+
+			<Button
+					android:id="@+id/buttonExit"
+					style="@style/Button.Previous"
+					android:text="Back"
+
+					android:layout_weight=".3"/>
+
+			<Button
+					android:id="@+id/proceed"
+					style="@style/Button.Next"
+					android:text="Continue"
+
+					android:layout_weight=".3"/>
+		</LinearLayout>
+
+	</LinearLayout>
+</RelativeLayout>

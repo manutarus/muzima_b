@@ -867,4 +867,20 @@ $(document).ready(function () {
                 "valid-location-only": { validLocationOnly: true }
             });
             /* End - validLocationOnly*/
+    /*
+     start of pharmacy JS
+
+     */
+
+    /* Called by the Activity WebViewActivity for finger print registration*/
+    document.populateFingeprint = function (jsonString) {
+        $.each(jsonString, function (key, value) {
+            var $inputField = $("input[name='" + key + "']");
+            $inputField.val(value);
+            $inputField.trigger('change');
+        })
+    };
+    $('.fingerprint_btn').click(function () {
+        fingerprintComponent.startFingerprintIntent($(this).parent().find("input[type='text']").attr('name'));
+    });
 });
