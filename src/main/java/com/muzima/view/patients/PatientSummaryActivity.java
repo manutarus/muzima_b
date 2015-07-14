@@ -31,6 +31,7 @@ import com.muzima.controller.ObservationController;
 import com.muzima.controller.PatientController;
 import com.muzima.service.JSONInputOutputToDisk;
 import com.muzima.utils.Constants;
+import com.muzima.utils.ObsInterface;
 import com.muzima.view.BaseActivity;
 import com.muzima.view.encounters.EncountersActivity;
 import com.muzima.view.forms.PatientFormsActivity;
@@ -163,6 +164,12 @@ public class PatientSummaryActivity extends BaseActivity {
 
     public void showEncounters(View v) {
         Intent intent = new Intent(this, EncountersActivity.class);
+        intent.putExtra(PATIENT, patient);
+        startActivity(intent);
+    }
+    public void showSummaries(View v) {
+        ObsInterface.showSummary=true;
+        Intent intent = new Intent(this, SummaryActivity.class);
         intent.putExtra(PATIENT, patient);
         startActivity(intent);
     }
