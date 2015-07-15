@@ -214,6 +214,8 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
         try {
             if (imageResultMap != null && !imageResultMap.isEmpty()) {
                 String jsonMap = new JSONObject(imageResultMap).toString();
+//                Log.i("ImageMama", imagingComponent.);
+//                imagingComponent.openImage("/sdcard/muzima/media/image/1436863957989");
                 Log.d(TAG, "Header:" + sectionName + "json:" + jsonMap);
                 webView.loadUrl("javascript:document.populateImage('" + sectionName + "', " + jsonMap + ")");
             }
@@ -385,6 +387,7 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
         ImageResult imageResult = ImagingComponent.parseActivityResult(requestCode, resultCode, intent);
         if (imageResult != null) {
             sectionName = imageResult.getSectionName();
+
             imageResultMap.put(imagingComponent.getImagePathField(), imageResult.getImageUri());
             imageResultMap.put(imagingComponent.getImageCaptionField(), imageResult.getImageCaption());
         }

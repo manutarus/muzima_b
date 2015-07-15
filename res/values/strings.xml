@@ -329,7 +329,7 @@
     <string name="preference_encounter_provider_desc">Logged-in user as default encounter form provider</string>
     <string name="preference_encounter_provider_title">Default encounter provider</string>
     <string name="preference_encounter_provider">encounterProviderPreference</string>
-    <string name="crash_dialog_text">An unexpected error occurred forcing mUzima to stop. Please help us fix
+    <string name="crash_dialog_text">An un error occurred forcing mUzima to stop. Please help us fix
         this by sending us error data, all you have to do is click OK.
     </string>
     <string name="crash_dialog_title">mUzima has crashed...</string>
@@ -354,4 +354,11 @@
     <string name="not_a_provider_message">You do not have provider rights or your provider data is not downloaded, please use add provider option.</string>
     <string name="preference_font_size_title">Font Size</string>
     <string name="preference_font_size">font_size</string>
+
+    <string-array name="category_array">
+        <item>Select media category</item>
+        <item>XRay</item>
+        <item>Lab Result</item>
+        <item>Discharge Sheet</item>
+    </string-array>
 </resources>

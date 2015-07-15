@@ -30,11 +30,10 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/user_pic"/>
 
-            <EditText
-                    android:id="@+id/imageCaption"
-                    style="@style/CaptionEditText"
-                    android:visibility="gone"
-                    android:hint="@string/image_caption"/>
+                <Spinner
+                        android:id="@+id/categories"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
 

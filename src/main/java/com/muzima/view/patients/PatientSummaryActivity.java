@@ -11,8 +11,10 @@ package com.muzima.view.patients;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,14 +26,9 @@ import com.muzima.R;
 import com.muzima.adapters.patients.PatientAdapterHelper;
 import com.muzima.api.model.Patient;
 import com.muzima.api.model.User;
-import com.muzima.controller.EncounterController;
-import com.muzima.controller.FormController;
-import com.muzima.controller.NotificationController;
-import com.muzima.controller.ObservationController;
-import com.muzima.controller.PatientController;
+import com.muzima.controller.*;
 import com.muzima.service.JSONInputOutputToDisk;
 import com.muzima.utils.Constants;
-import com.muzima.utils.ObsInterface;
 import com.muzima.view.BaseActivity;
 import com.muzima.view.encounters.EncountersActivity;
 import com.muzima.view.forms.PatientFormsActivity;
@@ -45,6 +42,8 @@ import static com.muzima.utils.DateUtils.getFormattedDate;
 public class PatientSummaryActivity extends BaseActivity {
     private static final String TAG = "PatientSummaryActivity";
     public static final String PATIENT = "patient";
+    private static final String APP_EXTERNAL_DIR_ROOT =  Environment.getExternalStorageDirectory().getPath() + "/muzima";
+    public static final String APP_MEDIA_DIR = APP_EXTERNAL_DIR_ROOT + "/media";
 
     private BackgroundQueryTask mBackgroundQueryTask;
 
@@ -167,12 +166,21 @@ public class PatientSummaryActivity extends BaseActivity {
         intent.putExtra(PATIENT, patient);
         startActivity(intent);
     }
+//    public void showSummaries(View v) {
+//        ObsInterface.showSummary=true;
+//        Intent intent = new Intent(this, SummaryActivity.class);
+//        intent.putExtra(PATIENT, patient);
+//        startActivity(intent);
+//    }
     public void showSummaries(View v) {
-        ObsInterface.showSummary=true;
-        Intent intent = new Intent(this, SummaryActivity.class);
-        intent.putExtra(PATIENT, patient);
+        String url = APP_MEDIA_DIR + "/image/" +  "juju.png";
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.parse("file://" + url), "image/*");
         startActivity(intent);
     }
+
+
 
     private static class PatientSummaryActivityMetadata {
         int recommendedForms;

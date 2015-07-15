@@ -25,14 +25,18 @@ import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 import com.muzima.R;
 import com.muzima.utils.MediaUtils;
 import com.muzima.view.BaseActivity;
 
-import java.io.File;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 import static com.muzima.utils.Constants.APP_IMAGE_DIR;
 import static com.muzima.utils.Constants.TMP_FILE_PATH;
@@ -49,7 +53,7 @@ public class ImagingIntent extends BaseActivity {
     private String IMAGE_FOLDER;
 
     private ImageView mImagePreview;
-    private EditText mImageCaption;
+    private Spinner mImageCaption;
 //    private View mCaptionContainer;
     private View mImageAcceptContainer;
     private View mImageCaptureContainer;
@@ -89,18 +93,50 @@ public class ImagingIntent extends BaseActivity {
         }
 
         mImagePreview = (ImageView) findViewById(R.id.imagePreview);
-        mImageCaption = (EditText) findViewById(R.id.imageCaption);
         mImageAcceptContainer =  findViewById(R.id.imageAcceptContainer);
         mImageCaptureContainer = findViewById(R.id.imageCaptureContainer);
+        mImageCaption  = (Spinner) findViewById(R.id.categories);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.category_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mImageCaption .setAdapter(adapter);
 
         refreshImageView();
     }
     public void acceptImage(View view) {
-        String caption = mImageCaption.getText().toString();
 
-        if (caption == null || caption.length() < 1){
-            Toast.makeText(getApplicationContext(),"Please enter a caption for the image", Toast.LENGTH_SHORT).show();
+        String caption = mImageCaption.getSelectedItem().toString();
+
+        if (caption.equals("Select media category")){
+            Toast.makeText(getApplicationContext(),"Please select category for the image", Toast.LENGTH_SHORT).show();
             return;
+        } else{
+            OutputStream fOut = null;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String currentDateTime = sdf.format(new Date());
+            File file =
+                    new File(IMAGE_FOLDER + File.separator,mImageCaption.getSelectedItem().
+                            toString()+"_"+currentDateTime+"_"+UUID.randomUUID().toString().substring(0,4)+".png");
+            try {
+                fOut = new FileOutputStream(file);
+                File f = new File(IMAGE_FOLDER + File.separator + mBinaryName);
+                Display display =
+                        ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
+                                .getDefaultDisplay();
+                int screenWidth = display.getWidth();
+                int screenHeight = display.getHeight();
+                if (f.exists()) {
+                    Bitmap bmp = MediaUtils.getBitmapScaledToDisplay(f, screenHeight, screenWidth);
+                    bmp.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+                }
+                fOut.flush();
+                fOut.close();
+                MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         String imageUri = IMAGE_FOLDER + File.separator + mBinaryName;
@@ -176,6 +212,7 @@ public class ImagingIntent extends BaseActivity {
             if (f.exists()) {
                 Bitmap bmp = MediaUtils.getBitmapScaledToDisplay(f, screenHeight, screenWidth);
                 mImagePreview.setImageBitmap(bmp);
+
             } else {
                 mImagePreview.setImageBitmap(null);
             }
@@ -216,8 +253,8 @@ public class ImagingIntent extends BaseActivity {
             //hide capture view
             mImageCaptureContainer.setVisibility(View.GONE);
 
-            if (mBinaryDescription != null)
-                mImageCaption.setText(mBinaryDescription);
+//            if (mBinaryDescription != null)
+//                mImageCaption.setText(mBinaryDescription);
 
         } else {
             //no image do allot here
@@ -244,6 +281,7 @@ public class ImagingIntent extends BaseActivity {
         ContentValues values;
         Uri imageURI;
         String destImagePath = IMAGE_FOLDER + File.separator + System.currentTimeMillis();
+//        String destImagePath = IMAGE_FOLDER + File.separator + "luki";
 
         switch (requestCode) {
             case IMAGE_CAPTURE:
