@@ -29,6 +29,7 @@ import com.muzima.api.model.User;
 import com.muzima.controller.*;
 import com.muzima.service.JSONInputOutputToDisk;
 import com.muzima.utils.Constants;
+import com.muzima.utils.ObsInterface;
 import com.muzima.view.BaseActivity;
 import com.muzima.view.encounters.EncountersActivity;
 import com.muzima.view.forms.PatientFormsActivity;
@@ -134,6 +135,7 @@ public class PatientSummaryActivity extends BaseActivity {
 
         TextView patientIdentifier = (TextView) findViewById(R.id.patientIdentifier);
         patientIdentifier.setText(patient.getIdentifier());
+        ObsInterface.holdIdentifier = patient.getIdentifier();
     }
 
     @Override
@@ -166,13 +168,18 @@ public class PatientSummaryActivity extends BaseActivity {
         intent.putExtra(PATIENT, patient);
         startActivity(intent);
     }
-//    public void showSummaries(View v) {
-//        ObsInterface.showSummary=true;
-//        Intent intent = new Intent(this, SummaryActivity.class);
-//        intent.putExtra(PATIENT, patient);
-//        startActivity(intent);
-//    }
     public void showSummaries(View v) {
+        ObsInterface.showSummary=true;
+        Intent intent = new Intent(this, SummaryActivity.class);
+        intent.putExtra(PATIENT, patient);
+        startActivity(intent);
+    }
+    public void showMedia(View v) {
+        Intent intent = new Intent(this, MediaViewActivity.class);
+        intent.putExtra(PATIENT, patient);
+        startActivity(intent);
+    }
+    public void showImage(View v) {
         String url = APP_MEDIA_DIR + "/image/" +  "juju.png";
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);

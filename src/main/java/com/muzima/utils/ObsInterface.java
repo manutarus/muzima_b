@@ -16,5 +16,6 @@ public class ObsInterface {
     public static List<String> medicationStopDateList = new ArrayList<String>();
     public static byte[] fingerprintResultBytes;
     public static boolean showSummary = false;
+    public static String holdIdentifier = null;
 
 }

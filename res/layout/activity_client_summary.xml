@@ -120,6 +120,40 @@
             <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:baselineAligned="false">
+
+
+                <RelativeLayout
+                        style="@style/ClickableGridItem"
+                        android:layout_weight="100"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="5dp"
+                        android:layout_height="80dp"
+                        android:baselineAligned="false"
+                        android:onClick="showMedia">
+
+                    <TextView
+                            style="@style/DashboardListItemMediumHeadingText"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="@string/media">
+                    </TextView>
+
+                    <TextView
+                            android:id="@+id/mediaDescription"
+                            style="@style/DashboardItemDescription"
+                            android:layout_alignParentBottom="true"
+                            android:text="##">
+                    </TextView>
+
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
                     android:orientation="vertical"
                     android:layout_marginTop="10dp"
                     android:baselineAligned="false">

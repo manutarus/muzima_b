@@ -298,6 +298,16 @@
                     android:value="com.muzima.view.patients.PatientSummaryActivity"/>
         </activity>
 
+        <activity
+                android:name=".view.patients.MediaViewActivity"
+                android:label="@string/title_activity_client_summary"
+                android:configChanges="orientation|screenSize"
+                android:parentActivityName="com.muzima.view.patients.PatientSummaryActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.muzima.view.patients.PatientSummaryActivity"/>
+        </activity>
+
         <!--Wizard Activities Start-->
         <activity android:name=".view.cohort.CohortWizardActivity"
                   android:configChanges="orientation|screenSize"

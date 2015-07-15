@@ -60,6 +60,7 @@ public class SummaryActivity extends BroadcastListenerActivity {
     private void setupActionBar() {
         Patient patient = (Patient) getIntent().getSerializableExtra(PatientSummaryActivity.PATIENT);
         getSupportActionBar().setTitle(patient.getSummary());
+
     }
 
     @Override

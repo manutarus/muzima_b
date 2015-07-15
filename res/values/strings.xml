@@ -100,6 +100,7 @@
     <string name="title_login">Please Log In</string>
     <string name="title_activity_cohort_pref">Cohort Prefixes</string>
     <string name="summary">Summary</string>
+    <string name="media">Display Media</string>
     <string name="summaries_still_loading">Summaries are still loading</string>
 
     <string name="textview_login_username">Username:</string>

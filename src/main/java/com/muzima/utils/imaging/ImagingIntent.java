@@ -30,7 +30,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.muzima.R;
+import com.muzima.api.model.Patient;
 import com.muzima.utils.MediaUtils;
+import com.muzima.utils.ObsInterface;
 import com.muzima.view.BaseActivity;
 
 import java.io.*;
@@ -46,7 +48,7 @@ public class ImagingIntent extends BaseActivity {
     
     public static final int IMAGE_CAPTURE = 1;
     public static final int IMAGE_CHOOSE = 2;
-    
+
     public static final String KEY_IMAGE_PATH = "imagePath";
     public static final String KEY_IMAGE_CAPTION = "imageCaption";
     public static final String KEY_SECTION_NAME = "sectionName";
@@ -61,6 +63,7 @@ public class ImagingIntent extends BaseActivity {
     private String mSectionName;
     private String mBinaryName;
     private String mBinaryDescription;
+    private Patient patient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,7 +118,7 @@ public class ImagingIntent extends BaseActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String currentDateTime = sdf.format(new Date());
             File file =
-                    new File(IMAGE_FOLDER + File.separator,mImageCaption.getSelectedItem().
+                    new File(IMAGE_FOLDER + File.separator, ObsInterface.holdIdentifier+"_"+mImageCaption.getSelectedItem().
                             toString()+"_"+currentDateTime+"_"+UUID.randomUUID().toString().substring(0,4)+".png");
             try {
                 fOut = new FileOutputStream(file);
