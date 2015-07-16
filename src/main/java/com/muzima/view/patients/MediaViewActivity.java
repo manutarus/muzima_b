@@ -10,6 +10,8 @@ package com.muzima.view.patients;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -26,6 +28,8 @@ import com.muzima.api.model.Patient;
 import com.muzima.controller.PatientController;
 import com.muzima.service.JSONInputOutputToDisk;
 import com.muzima.utils.Constants;
+import com.muzima.utils.Fonts;
+import com.muzima.utils.ObsInterface;
 import com.muzima.view.BaseActivity;
 import org.joda.time.format.DateTimeFormat;
 
@@ -67,12 +71,13 @@ public class MediaViewActivity extends BaseActivity {
 
         Button[] dynamic_button = new Button[10];
         int counter =0;
-        for(String arrayList: getFileNames(GetFiles())){
-            if(arrayList.endsWith(".png")){
+        boolean dataAvailable = false;
+        for(final String arrayList: getFileNames(GetFiles())){
+            if(arrayList.endsWith(".png") && arrayList.startsWith(ObsInterface.holdIdentifier)){
+                dataAvailable = true;
                 String[] arraySplit = arrayList.split("_");
-
-                String date =DateTimeFormat.forPattern("dd-MM-yyyy").print(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(arraySplit[1]));
-                String text = "Category   : "+ arraySplit[0] +"\n" +
+                String date =DateTimeFormat.forPattern("dd-MM-yyyy").print(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(arraySplit[2]));
+                String text = "Category   : "+ arraySplit[1] +"\n" +
                          "Date taken: "+date+"\n";
                 dynamic_button[counter] = new Button(this);
                 dynamic_button[counter].setId(counter);
@@ -81,11 +86,22 @@ public class MediaViewActivity extends BaseActivity {
                 linearLayout.addView(dynamic_button[counter]);
                 dynamic_button[counter].setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Log.i("Clicked", "" + v.getTag());
+                        String url = APP_MEDIA_DIR + "/image/" +arrayList;
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.parse("file://" + url), "image/*");
+                        startActivity(intent);
                     }
                 });
                 counter++;
             }
+        }
+        if(!dataAvailable){
+
+            TextView noDataMsgTextView = (TextView) findViewById(R.id.no_media_msg);
+            noDataMsgTextView.setText(getResources().getText(R.string.no_media_available));
+            noDataMsgTextView.setTypeface(Fonts.roboto_bold_condensed(this));
+
         }
     }
 

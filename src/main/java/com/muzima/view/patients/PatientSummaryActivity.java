@@ -11,7 +11,6 @@ package com.muzima.view.patients;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -179,15 +178,6 @@ public class PatientSummaryActivity extends BaseActivity {
         intent.putExtra(PATIENT, patient);
         startActivity(intent);
     }
-    public void showImage(View v) {
-        String url = APP_MEDIA_DIR + "/image/" +  "juju.png";
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse("file://" + url), "image/*");
-        startActivity(intent);
-    }
-
-
 
     private static class PatientSummaryActivityMetadata {
         int recommendedForms;
