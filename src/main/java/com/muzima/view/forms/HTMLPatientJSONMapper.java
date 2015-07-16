@@ -32,6 +32,7 @@ public class HTMLPatientJSONMapper {
     private JSONObject patientJSON;
     private JSONObject observationJSON;
     private Patient patient;
+    private boolean jsonFlag = false;
 
     public String map(Patient patient, FormData formData, User loggedInUser, boolean isLoggedInUserIsDefaultProvider) {
         JSONObject prepopulateJSON = new JSONObject();
@@ -87,15 +88,21 @@ public class HTMLPatientJSONMapper {
     private void setJSONObjects(String jsonPayload) throws JSONException {
         JSONObject responseJSON = new JSONObject(jsonPayload);
         patientJSON = responseJSON.getJSONObject("patient");
-        observationJSON = responseJSON.getJSONObject("observation");
+        if(responseJSON.has("observation")) {
+            observationJSON = responseJSON.getJSONObject("observation");
+            jsonFlag = true;
+        }
+
     }
 
     private void createPatient() throws JSONException {
         initializePatient();
-        setPatientIdentifiers();
+        if(jsonFlag)
+            setPatientIdentifiers();
         setPatientNames();
         setPatientGender();
-        setPatientBirthDate();  if(patientJSON.has("patient.fingerprint"))
+        setPatientBirthDate();
+        if(patientJSON.has("patient.fingerprint"))
             setPatientAttributes();
         if(patientJSON.has("patient.phone_number"))
             setPhoneAttribute();
