@@ -8,8 +8,13 @@
 
 package com.muzima.adapters.observations;
 
+import android.util.Log;
+import com.muzima.api.model.Observation;
 import com.muzima.controller.ObservationController;
+import com.muzima.model.observation.ConceptWithObservations;
 import com.muzima.model.observation.Concepts;
+
+import java.util.HashMap;
 
 public class ConceptsBySearch extends ConceptAction {
     private String patientUuid;
@@ -34,5 +39,22 @@ public class ConceptsBySearch extends ConceptAction {
                 ", term='" + term + '\'' +
                 ", controller=" + controller +
                 '}';
+    }
+    public HashMap<Integer,String> ConceptsWithObs(String term, String patientUuid){
+        HashMap<Integer,String> hashMap = new HashMap<Integer,String>();
+        try {
+            if(!controller.searchObservationsGroupedByConcepts(term, patientUuid).isEmpty()){
+                ConceptWithObservations conceptWithObservations = controller.searchObservationsGroupedByConcepts(term, patientUuid).get(0);
+                int count = 0;
+                for(Observation observation: conceptWithObservations.getObservations()){
+                    hashMap.put(count,observation.getValueAsString());
+                    count++;
+                }
+            }
+        }
+        catch (ObservationController.LoadObservationException olx){
+            Log.e("ConceptSearch", "failed to fetch obs " + olx);
+        }
+        return hashMap;
     }
 }

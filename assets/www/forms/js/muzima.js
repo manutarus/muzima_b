@@ -914,4 +914,25 @@ $(document).ready(function () {
     $('.fingerprint_btn').click(function () {
         fingerprintComponent.startFingerprintIntent($(this).parent().find("input[type='text']").attr('name'));
     });
+
+    //Start getting medications
+    $.fn.currentMedication = function () {
+        return jQuery.parseJSON(imagingComponent.getCurrentMedication());
+    };
+    //Start getting medications frequency
+    $.fn.medicationFrequency = function () {
+        return jQuery.parseJSON(imagingComponent.getCurrentMedicationFrequency());
+    };
+    //Start getting medications dose
+    $.fn.medicationDose = function () {
+        return jQuery.parseJSON(imagingComponent.getCurrentMedicationDose());
+    };
+    //Start getting medications start date
+    $.fn.medicationStartDate = function () {
+        return jQuery.parseJSON(imagingComponent.getCurrentMedicationStartDate());
+    };
+    //Start getting medications stop date
+    $.fn.medicationStopDate = function () {
+        return jQuery.parseJSON(imagingComponent.getCurrentMedicationStopDate());
+    };
 });

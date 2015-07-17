@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font: 14px/1.4 Georgia, Serif;
+}
+
+
+/*
+Generic Styling, for Desktops/Laptops
+*/
+table {
+    width: 100%;
+}
+/* Zebra striping */
+tr:nth-of-type(odd) {
+    background: #eee;
+}
+th {
+    background: #333;
+    color: white;
+    font-weight: bold;
+}
+td, th {
+    padding: 3px;
+    text-align: left;
+}

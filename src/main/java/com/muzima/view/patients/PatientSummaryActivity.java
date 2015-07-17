@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.muzima.MuzimaApplication;
 import com.muzima.R;
+import com.muzima.adapters.observations.ConceptsBySearch;
 import com.muzima.adapters.patients.PatientAdapterHelper;
 import com.muzima.api.model.Patient;
 import com.muzima.api.model.User;
@@ -35,6 +36,7 @@ import com.muzima.view.forms.PatientFormsActivity;
 import com.muzima.view.notifications.PatientNotificationActivity;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.muzima.utils.DateUtils.getFormattedDate;
@@ -146,7 +148,46 @@ public class PatientSummaryActivity extends BaseActivity {
 
     public void showForms(View v) {
         Intent intent = new Intent(this, PatientFormsActivity.class);
+        ConceptsBySearch conceptsBySearch = new
+                ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
         intent.putExtra(PATIENT, patient);
+        ObsInterface.medicationAddedList.clear();
+        ObsInterface.medicationFrequencyList.clear();
+        ObsInterface.medicationDoseList.clear();
+        ObsInterface.medicationStartDateList.clear();
+        ObsInterface.medicationStopDateList.clear();
+        if(!conceptsBySearch.ConceptsWithObs("MEDICATION ADDED",patient.getUuid()).isEmpty()){
+            int count = conceptsBySearch.ConceptsWithObs("MEDICATION ADDED", patient.getUuid()).size();
+            HashMap<Integer,String> medication_added_hashMap = conceptsBySearch.ConceptsWithObs("MEDICATION ADDED", patient.getUuid());
+            HashMap<Integer,String> medication_frequency_hashMap = conceptsBySearch.ConceptsWithObs("MEDICATION FREQUENCY", patient.getUuid());
+            HashMap<Integer,String> medication_mg_hashMap = conceptsBySearch.ConceptsWithObs("NUMBER OF MILLIGRAM",patient.getUuid());
+            HashMap<Integer,String> medication_start_date = conceptsBySearch.ConceptsWithObs("HISTORICAL DRUG START DATE",patient.getUuid());
+            HashMap<Integer,String> medication_stop_date = conceptsBySearch.ConceptsWithObs("HISTORICAL DRUG STOP DATE",patient.getUuid());
+            for(int i = count-1; i>=0; i--){
+                if(!ObsInterface.medicationAddedList.contains(medication_added_hashMap.get(i))){
+                    if((medication_mg_hashMap.get(i)!=null) && (medication_frequency_hashMap.get(i)!=null)){
+                        ObsInterface.medicationAddedList.add(medication_added_hashMap.get(i));
+                        ObsInterface.medicationFrequencyList.add(medication_frequency_hashMap.get(i));
+                        ObsInterface.medicationDoseList.add(medication_mg_hashMap.get(i));
+                        if(medication_start_date.get(i)!=null){
+                            ObsInterface.medicationStartDateList.add(medication_start_date.get(i));
+                        }else {
+                            ObsInterface.medicationStartDateList.add("N/A");
+                        }
+                        if(medication_start_date.get(i)!=null){
+                            ObsInterface.medicationStopDateList.add(medication_stop_date.get(i));
+                        }else {
+                            ObsInterface.medicationStopDateList.add("N/A");
+                        }
+                        Log.i("Drug "+i,medication_added_hashMap.get(i) +"\n"
+                                +medication_frequency_hashMap.get(i) +"\n"
+                                +medication_mg_hashMap.get(i) +"\n"
+                                +medication_start_date.get(i) +"\n"
+                                +medication_stop_date.get(i) +"\n");
+                    }
+                }
+            }
+        }
         startActivity(intent);
     }
 
