@@ -112,7 +112,7 @@ $(document).ready(function () {
     $('body').addClass(font_size);
 
 
-    var providers = $("#providers");
+    var providers = $("#encounter\\.provider_id_select");
     var providerNamesResults = htmlDataStore.getProviderNamesFromDevice();
     providerNamesResults = JSON.parse(providerNamesResults);
     providers.empty();
@@ -120,12 +120,13 @@ $(document).ready(function () {
     $.each(providerNamesResults, function() {
         providers.append($("<option>").attr('value',this.identifier).text(this.name));
     });
+    providers.append($("<option>").attr('value',"other").text("Other"));
 
 //    /*setting default encounter provider*/
     var encounterProvider = htmlDataStore.getDefaultEncounterProvider();
     encounterProvider = JSON.parse(encounterProvider);
     $.each(encounterProvider, function() {
-        $("#encounter\\.provider_id_select").val(this.name);
+        $("#encounter\\.provider_id_select").val(this.identifier);
         $("#encounter\\.provider_id").val(this.identifier);
     });
 
