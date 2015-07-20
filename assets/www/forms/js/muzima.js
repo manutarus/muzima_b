@@ -936,4 +936,26 @@ $(document).ready(function () {
     $.fn.medicationStopDate = function () {
         return jQuery.parseJSON(imagingComponent.getCurrentMedicationStopDate());
     };
+
+
+    //Start getting stopped medications
+    $.fn.stoppedMedications = function () {
+        return jQuery.parseJSON(imagingComponent.getStoppedMedication());
+    };
+    //Start getting stopped medications frequency
+    $.fn.stoppedMedicationFrequency = function () {
+        return jQuery.parseJSON(imagingComponent.getStoppedMedicationFrequency());
+    };
+    //Start getting stopped medications dose
+    $.fn.stoppedMedicationsDose = function () {
+        return jQuery.parseJSON(imagingComponent.getStoppedMedicationDose());
+    };
+    //Start getting stopped medications start date
+    $.fn.stoppedMedicationsStartDate = function () {
+        return jQuery.parseJSON(imagingComponent.getStoppedMedicationStartDate());
+    };
+    //Start getting stopped medications stop date
+    $.fn.stoppedMedicationsStopDate = function () {
+        return jQuery.parseJSON(imagingComponent.getStoppedMedicationStopDate());
+    };
 });

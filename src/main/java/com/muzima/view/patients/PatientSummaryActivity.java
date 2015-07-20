@@ -159,6 +159,7 @@ public class PatientSummaryActivity extends BaseActivity {
         if(!conceptsBySearch.ConceptsWithObs("MEDICATION ADDED",patient.getUuid()).isEmpty()){
             int count = conceptsBySearch.ConceptsWithObs("MEDICATION ADDED", patient.getUuid()).size();
             HashMap<Integer,String> medication_added_hashMap = conceptsBySearch.ConceptsWithObs("MEDICATION ADDED", patient.getUuid());
+            HashMap<Integer,String> medication_stopped_hashMap = conceptsBySearch.ConceptsWithObs("OTHER MEDICATION PLAN", patient.getUuid());
             HashMap<Integer,String> medication_frequency_hashMap = conceptsBySearch.ConceptsWithObs("MEDICATION FREQUENCY", patient.getUuid());
             HashMap<Integer,String> medication_mg_hashMap = conceptsBySearch.ConceptsWithObs("NUMBER OF MILLIGRAM",patient.getUuid());
             HashMap<Integer,String> medication_start_date = conceptsBySearch.ConceptsWithObs("HISTORICAL DRUG START DATE",patient.getUuid());
@@ -166,24 +167,35 @@ public class PatientSummaryActivity extends BaseActivity {
             for(int i = count-1; i>=0; i--){
                 if(!ObsInterface.medicationAddedList.contains(medication_added_hashMap.get(i))){
                     if((medication_mg_hashMap.get(i)!=null) && (medication_frequency_hashMap.get(i)!=null)){
-                        ObsInterface.medicationAddedList.add(medication_added_hashMap.get(i));
-                        ObsInterface.medicationFrequencyList.add(medication_frequency_hashMap.get(i));
-                        ObsInterface.medicationDoseList.add(medication_mg_hashMap.get(i));
-                        if(medication_start_date.get(i)!=null){
-                            ObsInterface.medicationStartDateList.add(medication_start_date.get(i));
-                        }else {
-                            ObsInterface.medicationStartDateList.add("N/A");
+                        if(medication_stopped_hashMap.get(i)==null) {
+                            ObsInterface.medicationAddedList.add(medication_added_hashMap.get(i));
+                            ObsInterface.medicationFrequencyList.add(medication_frequency_hashMap.get(i));
+                            ObsInterface.medicationDoseList.add(medication_mg_hashMap.get(i));
+                            if (medication_start_date.get(i) != null) {
+                                ObsInterface.medicationStartDateList.add(medication_start_date.get(i));
+                            } else {
+                                ObsInterface.medicationStartDateList.add("N/A");
+                            }
+                            if (medication_start_date.get(i) != null) {
+                                ObsInterface.medicationStopDateList.add(medication_stop_date.get(i));
+                            } else {
+                                ObsInterface.medicationStopDateList.add("N/A");
+                            }
+                        }else{
+                            ObsInterface.medicationStoppedList.add(medication_added_hashMap.get(i));
+                            ObsInterface.medicationStoppedFrequencyList.add(medication_frequency_hashMap.get(i));
+                            ObsInterface.medicationStoppedDoseList.add(medication_mg_hashMap.get(i));
+                            if (medication_start_date.get(i) != null) {
+                                ObsInterface.medicationStoppedStartDateList.add(medication_start_date.get(i));
+                            } else {
+                                ObsInterface.medicationStoppedStartDateList.add("N/A");
+                            }
+                            if (medication_start_date.get(i) != null) {
+                                ObsInterface.medicationStoppedStopDateList.add(medication_stop_date.get(i));
+                            } else {
+                                ObsInterface.medicationStoppedStopDateList.add("N/A");
+                            }
                         }
-                        if(medication_start_date.get(i)!=null){
-                            ObsInterface.medicationStopDateList.add(medication_stop_date.get(i));
-                        }else {
-                            ObsInterface.medicationStopDateList.add("N/A");
-                        }
-                        Log.i("Drug "+i,medication_added_hashMap.get(i) +"\n"
-                                +medication_frequency_hashMap.get(i) +"\n"
-                                +medication_mg_hashMap.get(i) +"\n"
-                                +medication_start_date.get(i) +"\n"
-                                +medication_stop_date.get(i) +"\n");
                     }
                 }
             }
