@@ -210,6 +210,7 @@ public class PatientSummaryActivity extends BaseActivity {
     }
 
     public void showObservations(View v) {
+        ObsInterface.showSummary=false;
         Intent intent = new Intent(this, ObservationsActivity.class);
         intent.putExtra(PATIENT, patient);
         startActivity(intent);

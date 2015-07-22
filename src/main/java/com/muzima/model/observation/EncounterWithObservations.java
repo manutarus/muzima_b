@@ -10,6 +10,7 @@ package com.muzima.model.observation;
 
 import com.muzima.api.model.Encounter;
 import com.muzima.api.model.Observation;
+import com.muzima.utils.ObsInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,8 +29,12 @@ public class EncounterWithObservations {
     }
 
     public List<Observation> getObservations() {
-        Collections.sort(observations, observationDateTimeComparator);
-        return observations;
+        if(ObsInterface.showSummary) {
+            return observations;
+        }else{
+            Collections.sort(observations, observationDateTimeComparator);
+            return observations;
+        }
     }
 
     public void setObservations(List<Observation> observations) {
