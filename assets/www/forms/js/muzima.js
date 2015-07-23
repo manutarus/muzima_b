@@ -130,6 +130,17 @@ $(document).ready(function () {
         $("#encounter\\.provider_id").val(this.identifier);
     });
 
+    //    /*setting default encounter location*/
+    var encounterLocation = htmlDataStore.getDefaultEncounterLocation();
+    encounterLocation = JSON.parse(encounterLocation);
+    alert(this.name);
+    $("##encounter\\.location_id").val(this.id);
+//    $.each(encounterLocation, function() {
+//    alert(this.name);
+//        $("##encounter\\.location_id").val(this.id);
+//    });
+
+
     /* Start - Toggle free text element */
     var hasFreetext = $('.has-freetext');
     hasFreetext.change(function () {

@@ -21,6 +21,9 @@ import android.preference.Preference;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.muzima.MuzimaApplication;
 import com.muzima.R;
+import com.muzima.api.model.Location;
+import com.muzima.api.service.LocationService;
+import com.muzima.controller.LocationController;
 import com.muzima.scheduler.RealTimeFormUploader;
 import com.muzima.search.api.util.StringUtil;
 import com.muzima.tasks.ValidateURLTask;
@@ -29,7 +32,9 @@ import com.muzima.view.login.LoginActivity;
 import com.muzima.view.preferences.settings.ResetDataTask;
 import com.muzima.view.preferences.settings.SyncFormDataTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SettingsActivity extends SherlockPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -43,6 +48,7 @@ public class SettingsActivity extends SherlockPreferenceActivity implements Shar
     private String encounterProviderPreferenceKey;
     private String duplicateFormDataPreferenceKey;
     private String fontSizePreferenceKey;
+    private String locationPreferenceKey;
 
     private EditTextPreference serverPreference;
     private EditTextPreference usernamePreference;
@@ -53,6 +59,8 @@ public class SettingsActivity extends SherlockPreferenceActivity implements Shar
     private CheckBoxPreference duplicateFormDataPreference;
     private CheckBoxPreference realTimeSyncPreference;
     private ListPreference fontSizePreference;
+    private ListPreference locationPreference;
+    private LocationService locationService;
 
     private String newURL;
     private Map<String, PreferenceChangeHandler> actions = new HashMap<String, PreferenceChangeHandler>();
@@ -61,6 +69,11 @@ public class SettingsActivity extends SherlockPreferenceActivity implements Shar
     public void onUserInteraction() {
         ((MuzimaApplication) getApplication()).restartTimer();
         super.onUserInteraction();
+    }
+    public SettingsActivity(LocationService locationService){
+        this.locationService = locationService;
+    }
+    public SettingsActivity(){
     }
 
 
@@ -171,9 +184,30 @@ public class SettingsActivity extends SherlockPreferenceActivity implements Shar
         duplicateFormDataPreference.setSummary(duplicateFormDataPreference.getSummary());
 
         fontSizePreferenceKey = getResources().getString(R.string.preference_font_size);
+        locationPreferenceKey = getResources().getString(R.string.preference_location);
         fontSizePreference = (ListPreference) getPreferenceScreen().findPreference(fontSizePreferenceKey);
+        locationPreference = (ListPreference) getPreferenceScreen().findPreference(locationPreferenceKey);
         fontSizePreference.setSummary(fontSizePreference.getValue());
+        locationPreference.setSummary(locationPreference.getValue());
         registerListPreferenceChangeHandler(fontSizePreferenceKey, fontSizePreference);
+        registerListPreferenceChangeHandler(locationPreferenceKey, locationPreference);
+
+        List<Location> locationsOnDevice = new ArrayList<Location>();
+        try {
+            locationsOnDevice = ((MuzimaApplication) getApplication()).getLocationController().getAllLocations();
+        } catch (LocationController.LocationLoadException e) {
+            e.printStackTrace();
+        }
+        String[] localEntryValues = new String[locationsOnDevice.size()];
+        String[] localEntries = new String[locationsOnDevice.size()];
+        int i=0;
+        for(Location location: locationsOnDevice){
+            localEntries[i]= ""+location.getId();
+            localEntryValues[i]=location.getName();
+            i++;
+        }
+        locationPreference.setEntryValues(localEntries);
+        locationPreference.setEntries(localEntryValues);
 
         // Show the Up button in the action bar.
         setupActionBar();

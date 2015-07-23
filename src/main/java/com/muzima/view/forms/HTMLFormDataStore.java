@@ -142,6 +142,29 @@ public class HTMLFormDataStore {
         }
         return JSONValue.toJSONString(providers);
     }
+    @JavascriptInterface
+    public String getDefaultEncounterLocation()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(formWebViewActivity.getApplicationContext());
+        String locationId = preferences.getString(formWebViewActivity.getResources().getString(R.string.preference_location),
+                HTMLFormWebViewActivity.DEFAULT_FONT_SIZE).toLowerCase();
+
+        List<Location> locationsOnDevice = new ArrayList<Location>();
+        List<Location> defaultLocation = new ArrayList<Location>();
+        try {
+            locationsOnDevice = locationController.getAllLocations();
+        } catch (LocationController.LocationLoadException e) {
+            Log.e(TAG, "Exception occurred while loading locations", e);
+        }
+        for(Location location: locationsOnDevice){
+            if(location.getId()==Integer.parseInt(locationId)){
+                defaultLocation.add(location);
+                Log.i("sleepz ",location.getName());
+            }
+        }
+        return JSONValue.toJSONString(defaultLocation);
+
+    }
 
     @JavascriptInterface
     public String getFontSizePreference()

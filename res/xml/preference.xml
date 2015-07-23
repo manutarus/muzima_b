@@ -55,6 +55,12 @@
                 android:key="@string/preference_encounter_provider"
                 android:summary="@string/preference_encounter_provider_desc"
                 android:title="@string/preference_encounter_provider_title" />
+        <ListPreference
+                android:key="@string/preference_location"
+                android:entries="@array/locations_array"
+                android:summary="@string/preference_encounter_location_desc"
+                android:entryValues="@array/locations_arrayValues"
+                android:title="@string/preference_encounter_location_title" />
         <CheckBoxPreference
                 android:defaultValue="true"
                 android:checked="true"
