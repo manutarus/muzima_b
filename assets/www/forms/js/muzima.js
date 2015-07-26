@@ -111,6 +111,10 @@ $(document).ready(function () {
     var font_size = htmlDataStore.getFontSizePreference();
     $('body').addClass(font_size);
 
+     // setting font size as per user preference
+    var locationD = htmlDataStore.getDefaultEncounterLocation();
+    $("#encounter\\.location_id").val(locationD);
+
 
     var providers = $("#encounter\\.provider_id_select");
     var providerNamesResults = htmlDataStore.getProviderNamesFromDevice();
@@ -129,17 +133,6 @@ $(document).ready(function () {
         $("#encounter\\.provider_id_select").val(this.identifier);
         $("#encounter\\.provider_id").val(this.identifier);
     });
-
-    //    /*setting default encounter location*/
-    var encounterLocation = htmlDataStore.getDefaultEncounterLocation();
-    encounterLocation = JSON.parse(encounterLocation);
-    alert(this.name);
-    $("##encounter\\.location_id").val(this.id);
-//    $.each(encounterLocation, function() {
-//    alert(this.name);
-//        $("##encounter\\.location_id").val(this.id);
-//    });
-
 
     /* Start - Toggle free text element */
     var hasFreetext = $('.has-freetext');
