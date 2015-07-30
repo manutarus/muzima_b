@@ -44,8 +44,8 @@ import static com.muzima.utils.Constants.APP_IMAGE_DIR;
 import static com.muzima.utils.Constants.TMP_FILE_PATH;
 
 public class ImagingIntent extends BaseActivity {
-	private final static String TAG = "ImagingIntent";
-    
+    private final static String TAG = "ImagingIntent";
+
     public static final int IMAGE_CAPTURE = 1;
     public static final int IMAGE_CHOOSE = 2;
 
@@ -56,10 +56,10 @@ public class ImagingIntent extends BaseActivity {
 
     private ImageView mImagePreview;
     private Spinner mImageCaption;
-//    private View mCaptionContainer;
+    //    private View mCaptionContainer;
     private View mImageAcceptContainer;
     private View mImageCaptureContainer;
-    
+
     private String mSectionName;
     private String mBinaryName;
     private String mBinaryDescription;
@@ -106,20 +106,26 @@ public class ImagingIntent extends BaseActivity {
 
         refreshImageView();
     }
+    public String imageName(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String currentDateTime = sdf.format(new Date());
+        return ObsInterface.holdIdentifier+"_"+mImageCaption.getSelectedItem().
+                toString()+"_"+currentDateTime+"_"+UUID.randomUUID().toString().substring(0,4)+".png";
+
+    }
     public void acceptImage(View view) {
 
         String caption = mImageCaption.getSelectedItem().toString();
-
+        OutputStream fOut = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String currentDateTime = sdf.format(new Date());
         if (caption.equals("Select media category")){
             Toast.makeText(getApplicationContext(),"Please select category for the image", Toast.LENGTH_SHORT).show();
             return;
         } else{
-            OutputStream fOut = null;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String currentDateTime = sdf.format(new Date());
+
             File file =
-                    new File(IMAGE_FOLDER + File.separator, ObsInterface.holdIdentifier+"_"+mImageCaption.getSelectedItem().
-                            toString()+"_"+currentDateTime+"_"+UUID.randomUUID().toString().substring(0,4)+".png");
+                    new File(IMAGE_FOLDER + File.separator, imageName());
             try {
                 fOut = new FileOutputStream(file);
                 File f = new File(IMAGE_FOLDER + File.separator + mBinaryName);
@@ -129,8 +135,13 @@ public class ImagingIntent extends BaseActivity {
                 int screenWidth = display.getWidth();
                 int screenHeight = display.getHeight();
                 if (f.exists()) {
+                    ObsInterface obsInterface = new ObsInterface();
                     Bitmap bmp = MediaUtils.getBitmapScaledToDisplay(f, screenHeight, screenWidth);
+                    ObsInterface.base64Image = obsInterface.bitMapToBase64(bmp);
                     bmp.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+
+
+//                    bmp.compress(Bitmap.CompressFormat.PNG, 85, fOut);
                 }
                 fOut.flush();
                 fOut.close();
@@ -189,24 +200,24 @@ public class ImagingIntent extends BaseActivity {
             Toast.makeText(getApplicationContext(),"Error: Activity for choosing image not found", Toast.LENGTH_SHORT).show();
         }
     }
-    
-    @Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(KEY_SECTION_NAME, mSectionName);
-		outState.putString(KEY_IMAGE_PATH, mBinaryName);
-		outState.putString(KEY_IMAGE_CAPTION, mBinaryDescription);
-	}
 
-	private void refreshImageView() {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_SECTION_NAME, mSectionName);
+        outState.putString(KEY_IMAGE_PATH, mBinaryName);
+        outState.putString(KEY_IMAGE_CAPTION, mBinaryDescription);
+    }
+
+    private void refreshImageView() {
 
         // Only add the imageView if the user has taken a picture
         if (mBinaryName != null) {
-        	mImagePreview.setAdjustViewBounds(true);
-        	resizeImageView();
+            mImagePreview.setAdjustViewBounds(true);
+            resizeImageView();
             Display display =
-                ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
-                        .getDefaultDisplay();
+                    ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
+                            .getDefaultDisplay();
             int screenWidth = display.getWidth();
             int screenHeight = display.getHeight();
 
@@ -227,17 +238,17 @@ public class ImagingIntent extends BaseActivity {
                     Intent i = new Intent("android.intent.action.VIEW");
                     String[] projection = {"_id"};
                     Cursor c = getApplicationContext().getContentResolver()
-                                .query(Images.Media.EXTERNAL_CONTENT_URI,
+                            .query(Images.Media.EXTERNAL_CONTENT_URI,
                                     projection, "_data='" + IMAGE_FOLDER + File.separator + mBinaryName + "'", null, null);
                     if (c.getCount() > 0) {
                         c.moveToFirst();
                         String id = c.getString(c.getColumnIndex("_id"));
 
                         Log.i(TAG, "setting view path to: "  + Uri.withAppendedPath(
-                                        Images.Media.EXTERNAL_CONTENT_URI, id));
+                                Images.Media.EXTERNAL_CONTENT_URI, id));
 
                         i.setDataAndType(Uri.withAppendedPath(
-                            Images.Media.EXTERNAL_CONTENT_URI, id), "image/*");
+                                Images.Media.EXTERNAL_CONTENT_URI, id), "image/*");
                         try {
                             ImagingIntent.this.startActivity(i);
                         } catch (ActivityNotFoundException e) {
@@ -272,7 +283,7 @@ public class ImagingIntent extends BaseActivity {
         }
     }
 
-	@Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
@@ -321,10 +332,10 @@ public class ImagingIntent extends BaseActivity {
                 File source = new File(sourceImagePath);
                 File chosenImage = new File(destImagePath);
                 if (MediaUtils.folderExists(IMAGE_FOLDER))
-                	MediaUtils.copyFile(source, chosenImage);
-                
+                    MediaUtils.copyFile(source, chosenImage);
+
                 if (chosenImage.exists()) {
-                	mBinaryName = chosenImage.getName();
+                    mBinaryName = chosenImage.getName();
                     refreshImageView();
                 } else {
                     Log.e(TAG, "NO IMAGE EXISTS at: " + source.getAbsolutePath());
@@ -332,7 +343,7 @@ public class ImagingIntent extends BaseActivity {
                 break;
         }
     }
-    
+
     private void resizeImageView() {
         int width, height;
         Display display = getWindowManager().getDefaultDisplay();

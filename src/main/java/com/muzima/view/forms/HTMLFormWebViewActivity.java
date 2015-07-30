@@ -46,6 +46,7 @@ import com.muzima.utils.barcode.IntentIntegrator;
 import com.muzima.utils.barcode.IntentResult;
 import com.muzima.utils.fingerprint.futronic.FingerprintResult;
 import com.muzima.utils.imaging.ImageResult;
+import com.muzima.utils.imaging.ImagingIntent;
 import com.muzima.utils.video.VideoResult;
 import com.muzima.view.BroadcastListenerActivity;
 import com.muzima.view.patients.PatientSummaryActivity;
@@ -214,9 +215,8 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
         try {
             if (imageResultMap != null && !imageResultMap.isEmpty()) {
                 String jsonMap = new JSONObject(imageResultMap).toString();
-//                Log.i("ImageMama", imagingComponent.);
-//                imagingComponent.openImage("/sdcard/muzima/media/image/1436863957989");
                 Log.d(TAG, "Header:" + sectionName + "json:" + jsonMap);
+                webView.loadUrl("javascript:document.populateImageCaption('" + sectionName + "', " + jsonMap + ")");
                 webView.loadUrl("javascript:document.populateImage('" + sectionName + "', " + jsonMap + ")");
             }
         } catch(NullPointerException e) {
@@ -387,8 +387,7 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
         ImageResult imageResult = ImagingComponent.parseActivityResult(requestCode, resultCode, intent);
         if (imageResult != null) {
             sectionName = imageResult.getSectionName();
-
-            imageResultMap.put(imagingComponent.getImagePathField(), imageResult.getImageUri());
+            imageResultMap.put(imagingComponent.getImagePathField(), ObsInterface.base64Image);
             imageResultMap.put(imagingComponent.getImageCaptionField(), imageResult.getImageCaption());
         }
 

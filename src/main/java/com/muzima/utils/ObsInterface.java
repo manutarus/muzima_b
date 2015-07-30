@@ -1,5 +1,11 @@
 package com.muzima.utils;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +26,28 @@ public class ObsInterface {
     public static List<String> medicationStopDateList = new ArrayList<String>();
     public static List<String> medicationStoppedStopDateList = new ArrayList<String>();
     public static byte[] fingerprintResultBytes;
+    public static String base64Image;
     public static boolean showSummary = false;
     public static String holdIdentifier = null;
+
+    public static String bitMapToBase64(Bitmap bitmapImage)
+    {
+        Bitmap bitmap = bitmapImage;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String base64Image = Base64.encodeToString(b, Base64.DEFAULT);
+
+        Log.i("bitMapToBase64", base64Image);
+        return base64Image;
+    }
+    public static Bitmap base64ToBitMap(String base64Image)
+    {
+        byte[] decodedByte = Base64.decode(base64Image, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
+
+
 
 }
