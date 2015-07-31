@@ -35,6 +35,7 @@ import com.muzima.view.encounters.EncountersActivity;
 import com.muzima.view.forms.PatientFormsActivity;
 import com.muzima.view.notifications.PatientNotificationActivity;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -229,7 +230,29 @@ public class PatientSummaryActivity extends BaseActivity {
     }
     public void showMedia(View v) {
         Intent intent = new Intent(this, MediaViewActivity.class);
+        ConceptsBySearch conceptsBySearch = new
+                ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
+        HashMap<Integer,String> imageNames = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, IMAGE NAME", patient.getUuid());
+        if(!imageNames.isEmpty()){
+            String url = APP_MEDIA_DIR + "/image/";
+            ObsInterface obsInterface = new ObsInterface();
+            File file;
+            HashMap<Integer,String> mediaImage = new HashMap<Integer, String>();
+            int imageCount = imageNames.size();
+            for(int i = imageCount-1; i>=0; i--){
+                if(imageNames.get(i)!=null){
+                   file= new File(url+imageNames.get(i)+".png");
+                    if(!file.exists()){
+                        if(mediaImage.isEmpty())
+                            mediaImage = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, IMAGE", patient.getUuid());
+                        obsInterface.bitMapToSd(url+imageNames.get(i)+".png",obsInterface.base64ToBitMap(mediaImage.get(i)));
+                    }
+                }
+            }
+
+        }
         intent.putExtra(PATIENT, patient);
+
         startActivity(intent);
     }
 

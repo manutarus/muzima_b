@@ -277,7 +277,7 @@ $(document).ready(function () {
     document.populateImage = function (sectionName, jsonString) {
         var $parent = $('div[data-name="' + sectionName + '"]');
         $.each(jsonString, function (key, value) {
-            var $inputField = $parent.find("input[name='consultation_image_caption']");
+            var $inputField = $parent.find("input[name='captured_image']");
             $inputField.val(value);
             $inputField.trigger('change');  //Need this to trigger the event so image gets populated.
         });
