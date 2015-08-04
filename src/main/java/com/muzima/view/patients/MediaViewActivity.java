@@ -59,7 +59,6 @@ public class MediaViewActivity extends BaseActivity {
         if (intentExtras != null) {
             patient = (Patient) intentExtras.getSerializable(PATIENT);
         }
-
         try {
             setupPatientMetadata();
             notifyOfIdChange();
@@ -68,17 +67,15 @@ public class MediaViewActivity extends BaseActivity {
             finish();
         }
         ViewGroup linearLayout = (ViewGroup) findViewById(R.id.media);
-
-        Button[] dynamic_button = new Button[10];
         int counter =0;
-        boolean dataAvailable = false;
-        for(final String arrayList: getFileNames(GetFiles())){
-            if(arrayList.endsWith(".png") && arrayList.startsWith(ObsInterface.holdIdentifier)){
-                dataAvailable = true;
+        ArrayList<String> files = getFileNames(GetFiles());
+        if(!files.isEmpty()) {
+            Button[] dynamic_button = new Button[files.size()];
+            for (final String arrayList : files) {
                 String[] arraySplit = arrayList.split("_");
-                String date =DateTimeFormat.forPattern("dd-MM-yyyy").print(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(arraySplit[2]));
-                String text = "Category   : "+ arraySplit[1] +"\n" +
-                         "Date taken: "+date+"\n";
+                String date = DateTimeFormat.forPattern("dd-MM-yyyy").print(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(arraySplit[2]));
+                String text = "Category   : " + arraySplit[1] + "\n" +
+                        "Date taken: " + date + "\n";
                 dynamic_button[counter] = new Button(this);
                 dynamic_button[counter].setId(counter);
                 dynamic_button[counter].setTag("" + counter);
@@ -86,22 +83,18 @@ public class MediaViewActivity extends BaseActivity {
                 linearLayout.addView(dynamic_button[counter]);
                 dynamic_button[counter].setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        String url = APP_MEDIA_DIR + "/image/" +arrayList;
                         Intent intent = new Intent();
                         intent.setAction(Intent.ACTION_VIEW);
-                        intent.setDataAndType(Uri.parse("file://" + url), "image/*");
+                        intent.setDataAndType(Uri.parse("file://" + APP_MEDIA_DIR + "/image/pharmacy/" + arrayList), "image/*");
                         startActivity(intent);
                     }
                 });
                 counter++;
             }
-        }
-        if(!dataAvailable){
-
+        }else{
             TextView noDataMsgTextView = (TextView) findViewById(R.id.no_media_msg);
             noDataMsgTextView.setText(getResources().getText(R.string.no_media_available));
             noDataMsgTextView.setTypeface(Fonts.roboto_bold_condensed(this));
-
         }
     }
 
@@ -138,8 +131,6 @@ public class MediaViewActivity extends BaseActivity {
         }
     }
 
-
-
     private void setupPatientMetadata() throws PatientController.PatientLoadException {
 
         TextView patientName = (TextView) findViewById(R.id.patientName);
@@ -169,8 +160,7 @@ public class MediaViewActivity extends BaseActivity {
     }
 
     public File[] GetFiles() {
-        String url = APP_MEDIA_DIR + "/image/";
-        File f = new File(url);
+        File f = new File(APP_MEDIA_DIR + "/image/pharmacy/");
         f.mkdirs();
         File[] file = f.listFiles();
         return file;
@@ -181,12 +171,12 @@ public class MediaViewActivity extends BaseActivity {
         if (file.length == 0)
             return null;
         else {
-            for (int i=0; i<file.length; i++)
-                arrayFiles.add(file[i].getName());
+            for (int i=0; i<file.length; i++) {
+                if(file[i].getName().endsWith(".png") && file[i].getName().startsWith(patient.getIdentifier()))
+                    arrayFiles.add(file[i].getName());
+            }
         }
-
         return arrayFiles;
     }
-
 
 }

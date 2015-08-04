@@ -29,6 +29,7 @@ import com.muzima.api.model.User;
 import com.muzima.controller.*;
 import com.muzima.service.JSONInputOutputToDisk;
 import com.muzima.utils.Constants;
+import com.muzima.utils.MediaUtils;
 import com.muzima.utils.ObsInterface;
 import com.muzima.view.BaseActivity;
 import com.muzima.view.encounters.EncountersActivity;
@@ -56,7 +57,6 @@ public class PatientSummaryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_summary);
-
         Bundle intentExtras = getIntent().getExtras();
         if (intentExtras != null) {
             patient = (Patient) intentExtras.getSerializable(PATIENT);
@@ -69,6 +69,7 @@ public class PatientSummaryActivity extends BaseActivity {
             Toast.makeText(this, "An error occurred while fetching patient", Toast.LENGTH_SHORT).show();
             finish();
         }
+
     }
 
     private void notifyOfIdChange() {
@@ -229,27 +230,27 @@ public class PatientSummaryActivity extends BaseActivity {
         startActivity(intent);
     }
     public void showMedia(View v) {
+        String url = APP_MEDIA_DIR + "/image/pharmacy/";
+        MediaUtils.folderExists(url);
         Intent intent = new Intent(this, MediaViewActivity.class);
         ConceptsBySearch conceptsBySearch = new
                 ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
         HashMap<Integer,String> imageNames = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, IMAGE NAME", patient.getUuid());
+        HashMap<Integer,String> mediaImage = new HashMap<Integer, String>();
         if(!imageNames.isEmpty()){
-            String url = APP_MEDIA_DIR + "/image/";
             ObsInterface obsInterface = new ObsInterface();
             File file;
-            HashMap<Integer,String> mediaImage = new HashMap<Integer, String>();
             int imageCount = imageNames.size();
             for(int i = imageCount-1; i>=0; i--){
                 if(imageNames.get(i)!=null){
                    file= new File(url+imageNames.get(i)+".png");
                     if(!file.exists()){
                         if(mediaImage.isEmpty())
-                            mediaImage = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, IMAGE", patient.getUuid());
+                            mediaImage = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, PICTURE", patient.getUuid());
                         obsInterface.bitMapToSd(url+imageNames.get(i)+".png",obsInterface.base64ToBitMap(mediaImage.get(i)));
                     }
                 }
             }
-
         }
         intent.putExtra(PATIENT, patient);
 

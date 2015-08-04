@@ -38,8 +38,6 @@ public class ObsInterface {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] b = baos.toByteArray();
         String base64Image = Base64.encodeToString(b, Base64.DEFAULT);
-
-        Log.i("bitMapToBase64", base64Image);
         return base64Image;
     }
     public static Bitmap base64ToBitMap(String base64Image)
@@ -56,8 +54,5 @@ public class ObsInterface {
             out.close();
         } catch(Exception e) {}
     }
-
-
-
 
 }

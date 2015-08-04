@@ -106,15 +106,14 @@ public class ImagingIntent extends BaseActivity {
 
         refreshImageView();
     }
-    public String imageName(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String currentDateTime = sdf.format(new Date());
-        return ObsInterface.holdIdentifier+"_"+mImageCaption.getSelectedItem().
-                toString()+"_"+currentDateTime+"_"+UUID.randomUUID().toString().substring(0,4)+".png";
-
-    }
+//    public String imageName(){
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+//        String currentDateTime = sdf.format(new Date());
+//        return ObsInterface.holdIdentifier+"_"+mImageCaption.getSelectedItem().
+//                toString()+"_"+currentDateTime+"_"+UUID.randomUUID().toString().substring(0,4)+".png";
+//
+//    }
     public void acceptImage(View view) {
-
         String caption = mImageCaption.getSelectedItem().toString();
         OutputStream fOut = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -123,34 +122,15 @@ public class ImagingIntent extends BaseActivity {
             Toast.makeText(getApplicationContext(),"Please select category for the image", Toast.LENGTH_SHORT).show();
             return;
         } else{
-
-            File file =
-                    new File(IMAGE_FOLDER + File.separator, imageName());
-            try {
-                fOut = new FileOutputStream(file);
-                File f = new File(IMAGE_FOLDER + File.separator + mBinaryName);
-                Display display =
-                        ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
-                                .getDefaultDisplay();
-                int screenWidth = display.getWidth();
-                int screenHeight = display.getHeight();
-                if (f.exists()) {
-                    ObsInterface obsInterface = new ObsInterface();
-                    Bitmap bmp = MediaUtils.getBitmapScaledToDisplay(f, screenHeight, screenWidth);
-                    ObsInterface.base64Image = obsInterface.bitMapToBase64(bmp);
-                    bmp.compress(Bitmap.CompressFormat.PNG, 85, fOut);
-
-
-//                    bmp.compress(Bitmap.CompressFormat.PNG, 85, fOut);
-                }
-                fOut.flush();
-                fOut.close();
-                MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            File f = new File(IMAGE_FOLDER + File.separator + mBinaryName);
+            Display display =
+                    ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
+                            .getDefaultDisplay();
+            int screenWidth = display.getWidth();
+            int screenHeight = display.getHeight();
+            ObsInterface obsInterface = new ObsInterface();
+            Bitmap bmp = MediaUtils.getBitmapScaledToDisplay(f, screenHeight, screenWidth);
+            ObsInterface.base64Image = obsInterface.bitMapToBase64(bmp);
         }
 
         String imageUri = IMAGE_FOLDER + File.separator + mBinaryName;

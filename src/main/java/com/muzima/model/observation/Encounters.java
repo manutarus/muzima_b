@@ -8,9 +8,12 @@
 
 package com.muzima.model.observation;
 
+import android.util.Base64;
+import android.util.Log;
 import com.muzima.api.model.Observation;
 import com.muzima.utils.ObsInterface;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Encounters extends ArrayList<EncounterWithObservations> {
@@ -21,6 +24,11 @@ public class Encounters extends ArrayList<EncounterWithObservations> {
         if(ObsInterface.showSummary) {
             Map<Integer,Observation> treeMap = new TreeMap();
             for (Observation observation : observations) {
+                try {
+                    Log.i("foundObsValueAsString ", new String(Base64.decode(observation.getValueAsString(), Base64.DEFAULT), "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 if (observation.getConcept().getName().contains("INTERNATIONAL NORMALIZED RATIO")) {
                     treeMap.put(1, observation);
                 }else if (observation.getConcept().getName().contains("SYSTOLIC BLOOD PRESSURE")) {
