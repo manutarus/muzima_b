@@ -117,7 +117,9 @@ public class PatientJSONMapper {
         patientValueMap.put("patient.medical_record_number", StringUtils.defaultString(patient.getIdentifier()));
         patientValueMap.put("patient.family_name", StringUtils.defaultString(patient.getFamilyName()));
         patientValueMap.put("patient.given_name", StringUtils.defaultString(patient.getGivenName()));
-        patientValueMap.put("patient.middle_name", StringUtils.defaultString(patient.getMiddleName()));
+        if(patient.getMiddleName() != null){
+            patientValueMap.put("patient.middle_name", StringUtils.defaultString(patient.getMiddleName()));
+        }
         patientValueMap.put("patient.sex", StringUtils.defaultString(patient.getGender()));
         patientValueMap.put("patient.uuid", StringUtils.defaultString(patient.getUuid()));
         patientValueMap.put("encounter.form_uuid", StringUtils.defaultString(formData.getTemplateUuid()));

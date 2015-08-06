@@ -42,7 +42,9 @@ public class HTMLPatientJSONMapper {
         try {
             patientDetails.put("patient.medical_record_number", StringUtils.defaultString(patient.getIdentifier()));
             patientDetails.put("patient.given_name", StringUtils.defaultString(patient.getGivenName()));
-            patientDetails.put("patient.middle_name", StringUtils.defaultString(patient.getMiddleName()));
+            if(patient.getMiddleName() != null){
+                patientDetails.put("patient.middle_name", StringUtils.defaultString(patient.getMiddleName()));
+            }
             patientDetails.put("patient.family_name", StringUtils.defaultString(patient.getFamilyName()));
             patientDetails.put("patient.sex", StringUtils.defaultString(patient.getGender()));
             patientDetails.put("patient.uuid", StringUtils.defaultString(patient.getUuid()));
@@ -148,7 +150,6 @@ public class HTMLPatientJSONMapper {
 
     private List<PatientIdentifier> getPatientIdentifiers() throws JSONException {
         List<PatientIdentifier> patientIdentifiers = new ArrayList<PatientIdentifier>();
-
         patientIdentifiers.add(getPreferredPatientIdentifier());
         patientIdentifiers.add(getPatientUuidAsIdentifier());
 
@@ -159,13 +160,43 @@ public class HTMLPatientJSONMapper {
     }
 
     private PatientIdentifier getPreferredPatientIdentifier() throws JSONException {
-        String identifierValue = patientJSON.getString("patient.medical_record_number");
-        String identifierTypeName = Constants.LOCAL_PATIENT;
+        String identifierValue = null;
+        String identifierTypeName = null;
+        if((patientJSON.has("patient.medical_record_number"))){
+            identifierValue = patientJSON.getString("patient.medical_record_number");
+            identifierTypeName = Constants.LOCAL_PATIENT;
+            PatientIdentifier preferredPatientIdentifier = createPatientIdentifier(identifierTypeName, identifierValue);
+            preferredPatientIdentifier.setPreferred(true);
+            return preferredPatientIdentifier;
+        }else{
+            boolean hasAnticaog = false;
+            for(PatientIdentifier patientIdentifiers: getOtherPatientIdentifiers()){
+                if(patientIdentifiers != null && patientIdentifiers.getIdentifierType().equals("Anticoagulation ID")) {
+                    hasAnticaog = true;
+                }
+            }
+            if(hasAnticaog){
+                for(PatientIdentifier patientIdentifiers: getOtherPatientIdentifiers()){
+                    if(patientIdentifiers != null && patientIdentifiers.getIdentifierType().equals("Anticoagulation ID")) {
+                        identifierValue = patientIdentifiers.getIdentifier();
+                        identifierTypeName = patientIdentifiers.getIdentifierType().getName();
+                        PatientIdentifier preferredPatientIdentifier = createPatientIdentifier(identifierTypeName, identifierValue);
+                        preferredPatientIdentifier.setPreferred(true);
 
-        PatientIdentifier preferredPatientIdentifier = createPatientIdentifier(identifierTypeName, identifierValue);
-        preferredPatientIdentifier.setPreferred(true);
+                        return preferredPatientIdentifier;
+                    }
+                }
+            }else{
+                for(PatientIdentifier patientIdentifiers: getOtherPatientIdentifiers()){
+                    identifierValue = patientIdentifiers.getIdentifier();
+                    identifierTypeName = patientIdentifiers.getIdentifierType().getName();
+                }
+            }
+            PatientIdentifier preferredPatientIdentifier = createPatientIdentifier(identifierTypeName, identifierValue);
+            preferredPatientIdentifier.setPreferred(true);
+            return preferredPatientIdentifier;
+        }
 
-        return preferredPatientIdentifier;
     }
 
     private List<PatientIdentifier> getOtherPatientIdentifiers() throws JSONException {
@@ -221,12 +252,11 @@ public class HTMLPatientJSONMapper {
         personName.setFamilyName(patientJSON.getString("patient.family_name"));
         personName.setGivenName(patientJSON.getString("patient.given_name"));
 
-        String middleNameJSONString = "patient.middle_name";
-        String middleName = "";
-        if (patientJSON.has(middleNameJSONString))
-            middleName = patientJSON.getString(middleNameJSONString);
-        personName.setMiddleName(middleName);
-
+        if (patientJSON.has("patient.middle_name")) {
+            personName.setMiddleName(patientJSON.getString("patient.middle_name"));
+        }else{
+            personName.setMiddleName(" ");
+        }
         return personName;
     }
     private PersonAttribute getPersonAttribute() throws JSONException {
@@ -250,7 +280,6 @@ public class HTMLPatientJSONMapper {
         String phoneJSONString = "patient.phone_number";
         if(patientJSON.has(phoneJSONString))
             personAttribute.setAttribute(patientJSON.getString(phoneJSONString));
-
         return personAttribute;
 
     }
