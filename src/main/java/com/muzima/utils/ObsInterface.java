@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
+import com.muzima.api.model.Patient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -16,6 +17,8 @@ import java.util.List;
  * Time: 22:52
  */
 public class ObsInterface {
+    public static String currentPhoneNumber = new String();
+    public static Patient patient = new Patient();
     public static List<String> medicationAddedList = new ArrayList<String>();
     public static List<String> medicationStoppedList = new ArrayList<String>();
     public static List<String> medicationFrequencyList = new ArrayList<String>();

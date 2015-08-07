@@ -9,25 +9,28 @@
 package com.muzima.view.forms;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 import com.muzima.MuzimaApplication;
 import com.muzima.R;
-import com.muzima.api.model.FormData;
-import com.muzima.api.model.Location;
-import com.muzima.api.model.Patient;
-import com.muzima.api.model.Provider;
+import com.muzima.api.context.Context;
+import com.muzima.api.model.*;
+import com.muzima.api.service.PatientService;
 import com.muzima.controller.FormController;
 import com.muzima.controller.LocationController;
+import com.muzima.controller.PatientController;
 import com.muzima.controller.ProviderController;
 import com.muzima.scheduler.RealTimeFormUploader;
 import com.muzima.service.HTMLFormObservationCreator;
 import com.muzima.utils.Constants;
+import com.muzima.utils.ObsInterface;
 import com.muzima.utils.StringUtils;
 import net.minidev.json.JSONValue;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +46,8 @@ public class HTMLFormDataStore {
     private LocationController locationController;
     private FormData formData;
     private ProviderController providerController;
+    public static final String PATIENT = "patient";
+//    private Patient patient;
 
     public HTMLFormDataStore(HTMLFormWebViewActivity formWebViewActivity, FormController formController, LocationController locationController, FormData formData, ProviderController providerController) {
         this.formWebViewActivity = formWebViewActivity;
@@ -86,6 +91,22 @@ public class HTMLFormDataStore {
             if (!keepFormOpen) {
                 formWebViewActivity.finish();
                 if (status.equals("complete")) {
+
+                    JSONObject patientJSON = new JSONObject(jsonPayload).getJSONObject("patient");
+                    if(patientJSON.has("patient.phone_number_new")){
+                        PersonAttribute personAttribute = new PersonAttribute();
+                        PersonAttributeType personAttributeType =new PersonAttributeType();
+                        personAttributeType.setName("Contact Phone Number");
+                        personAttribute.setAttributeType(personAttributeType);
+
+                        personAttribute.setAttribute(patientJSON.getString("patient.phone_number_new"));
+                        ObsInterface.patient.removeAttribute("Contact Phone Number");
+                        ObsInterface.patient.addattribute(personAttribute);
+                        MuzimaApplication applicationContext = (MuzimaApplication) formWebViewActivity.getApplicationContext();
+                        applicationContext.getMuzimaContext().getPatientService().deletePatient(ObsInterface.patient);
+                        applicationContext.getMuzimaContext().getPatientService().savePatient(ObsInterface.patient);
+
+                    }
                     Toast.makeText(formWebViewActivity, "Completed form data is saved successfully.", Toast.LENGTH_SHORT).show();
                     RealTimeFormUploader.getInstance().uploadAllCompletedForms(formWebViewActivity.getApplicationContext());
                 }

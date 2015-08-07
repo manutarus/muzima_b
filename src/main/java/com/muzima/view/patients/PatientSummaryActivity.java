@@ -60,6 +60,7 @@ public class PatientSummaryActivity extends BaseActivity {
         Bundle intentExtras = getIntent().getExtras();
         if (intentExtras != null) {
             patient = (Patient) intentExtras.getSerializable(PATIENT);
+            ObsInterface.patient = patient;
         }
 
         try {
@@ -153,6 +154,10 @@ public class PatientSummaryActivity extends BaseActivity {
         ConceptsBySearch conceptsBySearch = new
                 ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
         intent.putExtra(PATIENT, patient);
+        ObsInterface.currentPhoneNumber ="";
+        if(patient.getAttribute("Contact Phone Number")!=null) {
+            ObsInterface.currentPhoneNumber = patient.getAttribute("Contact Phone Number").getAttribute();
+        }
         ObsInterface.medicationAddedList.clear();
         ObsInterface.medicationFrequencyList.clear();
         ObsInterface.medicationDoseList.clear();

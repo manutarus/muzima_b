@@ -366,6 +366,11 @@ $(document).ready(function () {
         changeYear: true,
         yearRange: "-70:-1"
     });
+    $('.datepickerDrug').datepicker({
+        dateFormat: dateFormat,
+        changeMonth: true,
+        changeYear: true
+    });
 
     /* Start - Initialize jQuery DatePicker */
 
@@ -969,5 +974,10 @@ $(document).ready(function () {
     //Start getting stopped medications stop date
     $.fn.stoppedMedicationsStopDate = function () {
         return jQuery.parseJSON(imagingComponent.getStoppedMedicationStopDate());
+    };
+
+    //get phone number
+    $.fn.currentPhoneNumber = function () {
+        return jQuery.parseJSON(imagingComponent.getCurrentPhoneNumber());
     };
 });

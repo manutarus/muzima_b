@@ -95,6 +95,9 @@ span.clear{
 .datepicker{
     background: white !important;
 }
+.datepickerDrug{
+    background: white !important;
+}
 
 .roman_numeral_list>li{
     list-style-type: lower-roman;
