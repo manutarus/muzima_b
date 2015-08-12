@@ -235,31 +235,47 @@ public class PatientSummaryActivity extends BaseActivity {
         startActivity(intent);
     }
     public void showMedia(View v) {
-        String url = APP_MEDIA_DIR + "/image/pharmacy/";
-        MediaUtils.folderExists(url);
+
         Intent intent = new Intent(this, MediaViewActivity.class);
         ConceptsBySearch conceptsBySearch = new
                 ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
-        HashMap<Integer,String> imageNames = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, IMAGE NAME", patient.getUuid());
-        HashMap<Integer,String> mediaImage = new HashMap<Integer, String>();
-        if(!imageNames.isEmpty()){
-            ObsInterface obsInterface = new ObsInterface();
-            File file;
-            int imageCount = imageNames.size();
-            for(int i = imageCount-1; i>=0; i--){
-                if(imageNames.get(i)!=null){
-                   file= new File(url+imageNames.get(i)+".png");
-                    if(!file.exists()){
-                        if(mediaImage.isEmpty())
-                            mediaImage = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, PICTURE", patient.getUuid());
-                        obsInterface.bitMapToSd(url+imageNames.get(i)+".png",obsInterface.base64ToBitMap(mediaImage.get(i)));
+        if(!conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, IMAGE NAME",patient.getUuid()).isEmpty()) {
+            String url = APP_MEDIA_DIR + "/image/pharmacy/";
+            MediaUtils.folderExists(url);
+            HashMap<Integer, String> imageNames = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, IMAGE NAME", patient.getUuid());
+            HashMap<Integer, String> mediaImage = new HashMap<Integer, String>();
+            if (!imageNames.isEmpty()) {
+                ObsInterface obsInterface = new ObsInterface();
+                File file;
+                int imageCount = imageNames.size();
+                for (int i = imageCount - 1; i >= 0; i--) {
+                    if (imageNames.get(i) != null) {
+                        file = new File(url + imageNames.get(i) + ".png");
+                        if (!file.exists()) {
+                            if (mediaImage.isEmpty())
+                                mediaImage = conceptsBySearch.ConceptsWithObs("CAPTURED CLINICAL MEDIA, PICTURE", patient.getUuid());
+                            obsInterface.bitMapToSd(url + imageNames.get(i) + ".png", obsInterface.base64ToBitMap(mediaImage.get(i)));
+                        }
                     }
                 }
             }
-        }
-        intent.putExtra(PATIENT, patient);
+            intent.putExtra(PATIENT, patient);
 
-        startActivity(intent);
+            startActivity(intent);
+        }else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No Images Found for display")
+                    .setTitle("Media Required")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.w(TAG, "Found No Media Images to Display");
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
     }
 
     private static class PatientSummaryActivityMetadata {
