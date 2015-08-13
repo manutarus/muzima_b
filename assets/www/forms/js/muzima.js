@@ -96,8 +96,8 @@ $(document).ready(function () {
 
     $('form').append(
         '<div class="form-group text-center">' +
-        '    <input class="btn btn-primary" id="save_draft" type="button" value="Save"/>' +
-        '    <input class="btn btn-primary" id="submit_form" type="button" value="Submit"/>' +
+        '    <input class="btn btn-primary" id="save_draft" type="button" value="Draft"/>' +
+        '    <input class="btn btn-primary" id="submit_form" type="button" value="Complete"/>' +
         '</div>'
     );
 
