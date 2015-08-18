@@ -133,6 +133,10 @@ public class PatientSummaryActivity extends BaseActivity {
             TextView phone = (TextView) findViewById(R.id.phone);
             phone.setText("Tel: "+patient.getAttribute("Contact Phone Number").getAttribute());
         }
+        if(patient.getAttribute("Alternative contact phone number")!=null) {
+            TextView phone = (TextView) findViewById(R.id.alternate_phone);
+            phone.setText(patient.getAttribute("Relationship to phone number owner").getAttribute()+": "+patient.getAttribute("Alternative contact phone number").getAttribute());
+        }
 
         TextView dob = (TextView) findViewById(R.id.dob);
         dob.setText("DOB: " + getFormattedDate(patient.getBirthdate()));
@@ -183,7 +187,7 @@ public class PatientSummaryActivity extends BaseActivity {
                             } else {
                                 ObsInterface.medicationStartDateList.add("N/A");
                             }
-                            if (medication_start_date.get(i) != null) {
+                            if (medication_stop_date.get(i) != null) {
                                 ObsInterface.medicationStopDateList.add(medication_stop_date.get(i));
                             } else {
                                 ObsInterface.medicationStopDateList.add("N/A");
@@ -197,7 +201,7 @@ public class PatientSummaryActivity extends BaseActivity {
                             } else {
                                 ObsInterface.medicationStoppedStartDateList.add("N/A");
                             }
-                            if (medication_start_date.get(i) != null) {
+                            if (medication_stop_date.get(i) != null) {
                                 ObsInterface.medicationStoppedStopDateList.add(medication_stop_date.get(i));
                             } else {
                                 ObsInterface.medicationStoppedStopDateList.add("N/A");

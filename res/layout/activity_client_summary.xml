@@ -36,6 +36,12 @@
                 style="@style/DashboardBaseText"/>
 
         <TextView
+                android:id="@+id/alternate_phone"
+                style="@style/DashboardMediumTitleText"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/dob"/>
+
+        <TextView
                 android:id="@+id/patientIdentifier"
                 style="@style/DashboardBaseText"
                 android:layout_alignParentRight="true"/>

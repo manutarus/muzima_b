@@ -3,6 +3,7 @@ package com.muzima.view.forms;
 import android.app.Activity;
 import android.content.Intent;
 import android.webkit.JavascriptInterface;
+import com.muzima.utils.ObsInterface;
 import com.muzima.utils.fingerprint.futronic.FingerprintResult;
 
 import static com.muzima.utils.fingerprint.futronic.FingerPrintActivity.FINGERPRINT_DATA;
@@ -20,6 +21,7 @@ public class FingerprintComponent {
     @JavascriptInterface
     public void startFingerprintIntent(String fieldName) {
         this.fieldName = fieldName;
+        ObsInterface.registration = true;
         Intent fingerPrintIntent = new Intent(activity.getApplication(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
         fingerPrintIntent.putExtra("action", 0);
         activity.startActivityForResult(fingerPrintIntent, REQUEST_CODE);

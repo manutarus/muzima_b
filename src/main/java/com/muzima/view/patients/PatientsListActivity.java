@@ -37,6 +37,7 @@ import com.muzima.controller.CohortController;
 import com.muzima.search.api.util.StringUtil;
 import com.muzima.utils.Fonts;
 import com.muzima.utils.NetworkUtils;
+import com.muzima.utils.ObsInterface;
 import com.muzima.utils.barcode.IntentIntegrator;
 import com.muzima.utils.barcode.IntentResult;
 import com.muzima.view.BroadcastListenerActivity;
@@ -201,17 +202,21 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_client_add:
+            case R.id.menu_client_add: {
+                ObsInterface.registration=true;
                 callConfirmationDialog();
                 return true;
+            }
 
             case R.id.scan:
                 invokeBarcodeScan();
                 return true;
 
-            case R.id.fingerprint:
+            case R.id.fingerprint: {
+                ObsInterface.registration=false;
                 invokeFingerprintScan();
                 return true;
+            }
             case R.id.menu_load:
                 if (notificationsSyncInProgress) {
                     Toast.makeText(this, "Action not allowed while sync is in progress", Toast.LENGTH_SHORT).show();
@@ -368,6 +373,7 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
                 Intent i = new Intent(getApplicationContext(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
                 i.putExtra("action", 2);
                 startActivity(i);
+                finish();
             } else {
                 if (!usbDeviceDataExchange.IsPendingOpen()) {
                     showMessageDialog("Cannot start fingerprint operation.\n" +
@@ -408,11 +414,13 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case UsbDeviceDataExchangeImpl.MESSAGE_ALLOW_DEVICE: {
-
                     if (usbDeviceDataExchange.ValidateContext()) {
-                        Intent i = new Intent(getApplicationContext(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
-                        i.putExtra("action", 2);
-                        startActivity(i);
+                        if(!ObsInterface.registration) {
+                            Intent i = new Intent(getApplicationContext(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
+                            i.putExtra("action", 2);
+                            startActivity(i);
+                            finish();
+                        }
                     } else {
                         showMessageDialog("Cannot start fingerprint operation.\n" +
                                 "Scanner device is not connected, please connect");
@@ -420,7 +428,7 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
                     break;
                 }
                 case UsbDeviceDataExchangeImpl.MESSAGE_DENY_DEVICE: {
-                    showMessageDialog("User deny scanner device");
+                    showMessageDialog("User deny scanner device patient");
                     break;
                 }
             }

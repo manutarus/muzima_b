@@ -49,6 +49,9 @@ public class PatientAdapterHelper extends ListAdapter<Patient> {
         if(patient.getAttribute("Contact Phone Number")!=null) {
             holder.phone.setText("Tel: "+patient.getAttribute("Contact Phone Number").getAttribute());
         }
+        if(patient.getAttribute("Contact Phone Number")==null && patient.getAttribute("Alternative contact phone number")!=null) {
+            holder.phone.setText("Alt: "+patient.getAttribute("Alternative contact phone number").getAttribute());
+        }
         holder.name.setText(getPatientFullName(patient));
         holder.genderImg.setImageResource(getGenderImage(patient.getGender()));
         return convertView;

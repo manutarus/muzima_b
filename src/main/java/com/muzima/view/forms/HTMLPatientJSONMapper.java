@@ -108,6 +108,8 @@ public class HTMLPatientJSONMapper {
             setPatientAttributes();
         if(patientJSON.has("patient.phone_number"))
             setPhoneAttribute();
+        if(patientJSON.has("patient.phone_number_alternate"))
+            setAlternatePhoneAttributes();
 
     }
 
@@ -135,6 +137,12 @@ public class HTMLPatientJSONMapper {
     private void setPhoneAttribute() throws JSONException{
         List<PersonAttribute> attributes = patient.getAtributes();
         attributes.add(getPhoneAttribute());
+        patient.setAttributes(attributes);
+    }
+    private void setAlternatePhoneAttributes() throws JSONException{
+        List<PersonAttribute> attributes = patient.getAtributes();
+        attributes.add(getAlternativePhoneAttribute());
+        attributes.add(getAlternativePhoneRelationShipAttribute());
         patient.setAttributes(attributes);
     }
 
@@ -280,6 +288,30 @@ public class HTMLPatientJSONMapper {
         String phoneJSONString = "patient.phone_number";
         if(patientJSON.has(phoneJSONString))
             personAttribute.setAttribute(patientJSON.getString(phoneJSONString));
+        return personAttribute;
+
+    }
+    private PersonAttribute getAlternativePhoneAttribute() throws JSONException {
+        PersonAttribute personAttribute = new PersonAttribute();
+        PersonAttributeType personAttributeType =new PersonAttributeType();
+        personAttributeType.setName("Alternative contact phone number");
+        personAttribute.setAttributeType(personAttributeType);
+
+        String phoneJSONString = "patient.phone_number_alternate";
+        if(patientJSON.has(phoneJSONString))
+            personAttribute.setAttribute(patientJSON.getString(phoneJSONString));
+        return personAttribute;
+
+    }
+    private PersonAttribute getAlternativePhoneRelationShipAttribute() throws JSONException {
+        PersonAttribute personAttribute = new PersonAttribute();
+        PersonAttributeType personAttributeType =new PersonAttributeType();
+        personAttributeType.setName("Relationship to phone number owner");
+        personAttribute.setAttributeType(personAttributeType);
+
+        String relationJSONString = "patient.relationship_to_phone_owner";
+        if(patientJSON.has(relationJSONString))
+            personAttribute.setAttribute(patientJSON.getString(relationJSONString));
         return personAttribute;
 
     }

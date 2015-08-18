@@ -148,6 +148,7 @@ public class FingerPrintActivity
                         if (processCompletedState && foundPatient != null) {
                             Intent intent = new Intent(FingerPrintActivity.this, PatientSummaryActivity.class);
                             intent.putExtra(PatientSummaryActivity.PATIENT, foundPatient);
+                            finish();
                             startActivity(intent);
                         }else if (!processCompletedState)
                             toggleButtonFunction();
@@ -486,8 +487,15 @@ public class FingerPrintActivity
         mButtonExit.setEnabled(bEnable);
         if (bEnable) {
             if (processCompletedState) {
-                toggleButton.setText("Continue");
-                stopProcessOn = false;
+                if(ObsInterface.registration) {
+                    toggleButton.setText("Continue");
+                    stopProcessOn = false;
+                }else {
+                    Intent intent = new Intent(FingerPrintActivity.this, PatientSummaryActivity.class);
+                    intent.putExtra(PatientSummaryActivity.PATIENT, foundPatient);
+                    finish();
+                    startActivity(intent);
+                }
             } else {
                 toggleButtonState();
                 stopProcessOn = false;
