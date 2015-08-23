@@ -58,6 +58,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -103,7 +104,7 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
     private Map<String, String> imageResultMap;
     private Map<String, String> audioResultMap;
     private Map<String, String> videoResultMap;
-    private HashMap<String, byte[]> fingerprintResultMap;
+    private HashMap<String, String> fingerprintResultMap;
     private String sectionName;
     private FormController formController;
     private LocationController locationController;
@@ -128,7 +129,7 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
         imageResultMap = new HashMap<String, String>();
         audioResultMap = new HashMap<String, String>();
         videoResultMap = new HashMap<String, String>();
-        fingerprintResultMap = new HashMap<String, byte[]>();
+        fingerprintResultMap = new HashMap<String, String>();
         setContentView(R.layout.activity_form_webview);
         progressDialog = new MuzimaProgressDialog(this);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -407,7 +408,11 @@ public class HTMLFormWebViewActivity extends BroadcastListenerActivity {
 
         FingerprintResult fingerprintResult = FingerprintComponent.parseActivityResult(requestCode, resultCode, intent);
         if (fingerprintResult != null) {
-            fingerprintResultMap.put(fingerprintResult.getSectionName(), ObsInterface.fingerprintResultBytes);
+            try {
+                fingerprintResultMap.put(fingerprintResult.getSectionName(), new String(ObsInterface.fingerprintResultBytes, "US-ASCII"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
         }
     }

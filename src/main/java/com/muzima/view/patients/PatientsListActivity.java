@@ -419,7 +419,6 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
                             Intent i = new Intent(getApplicationContext(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
                             i.putExtra("action", 2);
                             startActivity(i);
-                            finish();
                         }
                     } else {
                         showMessageDialog("Cannot start fingerprint operation.\n" +
