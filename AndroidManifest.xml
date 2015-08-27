@@ -158,6 +158,15 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.muzima.view.DashboardActivity"/>
         </activity>
+        <activity
+                android:name=".view.patients.MedicationSummaryActivity"
+                android:label="@string/title_activity_clients_list"
+                android:configChanges="orientation|screenSize"
+                android:parentActivityName="com.muzima.view.MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.muzima.view.DashboardActivity"/>
+        </activity>
 
         <activity
                 android:name=".view.patients.PatientRemoteSearchListActivity"

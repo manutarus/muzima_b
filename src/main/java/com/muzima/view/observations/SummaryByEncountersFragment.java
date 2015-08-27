@@ -16,7 +16,7 @@ import com.muzima.adapters.observations.ObservationsByEncounterAdapter;
 import com.muzima.controller.ObservationController;
 import com.muzima.view.patients.ObservationsListFragment;
 
-public class SummaryByEncountersFragment extends ObservationsListFragment {
+public class   SummaryByEncountersFragment extends ObservationsListFragment {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     }

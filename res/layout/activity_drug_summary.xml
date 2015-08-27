@@ -1,0 +1,107 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/DashboardTableContainer">
+
+    <RelativeLayout
+            style="@style/PatientDemographicsLayout"
+            android:background="@color/primary_black">
+
+        <TextView
+                android:id="@+id/patientName"
+                android:layout_alignParentLeft="true"
+                style="@style/DashboardMediumTitleText"/>
+
+        <ImageView
+                android:id="@+id/genderImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingTop="20dp"
+                android:contentDescription="Gender Image"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            style="@style/PatientDemographicsLayout"
+            android:paddingTop="4dp"
+            android:paddingBottom="16dp"
+            android:background="@color/primary_black" android:layout_height="85dp">
+
+        <TextView
+                android:id="@+id/phone"
+                style="@style/DashboardMediumTitleText"
+                android:layout_below="@+id/patientIdentifier"
+                android:layout_alignParentRight="true"/>
+
+        <TextView
+                android:id="@+id/dob"
+                style="@style/DashboardBaseText"/>
+
+        <TextView
+                android:id="@+id/alternate_phone"
+                style="@style/DashboardMediumTitleText"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/dob"/>
+
+        <TextView
+                android:id="@+id/patientIdentifier"
+                style="@style/DashboardBaseText"
+                android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <View style="@style/DividerLine"/>
+    <ScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                <TextView
+                        style="@style/DashboardListItemMediumHeadingText"
+                        android:layout_height="wrap_content"
+                        android:text="Current Medication">
+                </TextView>
+                <HorizontalScrollView
+                        android:id="@+id/currentMedication"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="horizontal|vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="5dip">
+
+                    <TableLayout
+                            android:id="@+id/currentMedicationLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="10dp" >
+                    </TableLayout>
+                </HorizontalScrollView>
+
+                <TextView
+                        style="@style/DashboardListItemMediumHeadingText"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Current Medication">
+                </TextView>
+                <HorizontalScrollView
+                        android:id="@+id/stoppedMedication"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="horizontal|vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="5dip">
+
+                    <TableLayout
+                            android:id="@+id/stoppedMedicationLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="10dp" >
+                    </TableLayout>
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+    </ScrollView>
+    <View style="@style/DividerLine"/>
+
+</LinearLayout>

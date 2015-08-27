@@ -215,7 +215,7 @@ public class PatientSummaryActivity extends BaseActivity {
     }
 
     public void showNotifications(View v) {
-        Intent intent = new Intent(this, PatientNotificationActivity.class);
+        Intent intent = new Intent(this, MedicationSummaryActivity.class);
         intent.putExtra(PATIENT, patient);
         startActivity(intent);
     }
