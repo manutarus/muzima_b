@@ -160,7 +160,6 @@ public class PatientSummaryActivity extends BaseActivity {
         ObsInterface.medicationFrequencyList.clear();
         ObsInterface.medicationDoseList.clear();
         ObsInterface.medicationStartDateList.clear();
-
 //        stopped meds
         ObsInterface.medicationStoppedList.clear();
         ObsInterface.medicationStoppedFrequencyList.clear();
