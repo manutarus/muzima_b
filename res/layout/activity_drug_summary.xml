@@ -82,7 +82,7 @@
                         style="@style/DashboardListItemMediumHeadingText"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Current Medication">
+                        android:text="Stopped Medication">
                 </TextView>
                 <HorizontalScrollView
                         android:id="@+id/stoppedMedication"

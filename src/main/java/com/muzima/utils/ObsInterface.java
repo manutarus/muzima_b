@@ -27,7 +27,6 @@ public class ObsInterface {
     public static List<String> medicationStoppedDoseList = new ArrayList<String>();
     public static List<String> medicationStartDateList = new ArrayList<String>();
     public static List<String> medicationStoppedStartDateList = new ArrayList<String>();
-    public static List<String> medicationStopDateList = new ArrayList<String>();
     public static List<String> medicationStoppedStopDateList = new ArrayList<String>();
     public static byte[] fingerprintResultBytes;
     public static String base64Image;

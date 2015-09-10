@@ -957,11 +957,6 @@ $(document).ready(function () {
     $.fn.medicationStartDate = function () {
         return jQuery.parseJSON(imagingComponent.getCurrentMedicationStartDate());
     };
-    //Start getting medications stop date
-    $.fn.medicationStopDate = function () {
-        return jQuery.parseJSON(imagingComponent.getCurrentMedicationStopDate());
-    };
-
 
     //Start getting stopped medications
     $.fn.stoppedMedications = function () {

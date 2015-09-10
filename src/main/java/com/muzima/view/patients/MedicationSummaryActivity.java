@@ -48,7 +48,8 @@ public class MedicationSummaryActivity extends BaseActivity {
     private static final String TAG = "PatientSummaryActivity";
     public static final String PATIENT = "patient";
     private Patient patient;
-    TableLayout table_layout;
+    TableLayout table_layoutCurrent;
+    TableLayout table_layoutStopped;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,8 @@ public class MedicationSummaryActivity extends BaseActivity {
         try {
             setupPatientMetadata();
             notifyOfIdChange();
-            table_layout = (TableLayout) findViewById(R.id.currentMedicationLayout);
+            table_layoutCurrent = (TableLayout) findViewById(R.id.currentMedicationLayout);
+            table_layoutStopped = (TableLayout) findViewById(R.id.stoppedMedicationLayout);
             BuildTable();
         } catch (PatientController.PatientLoadException e) {
             Toast.makeText(this, "An error occurred while fetching patient", Toast.LENGTH_SHORT).show();
@@ -71,18 +73,17 @@ public class MedicationSummaryActivity extends BaseActivity {
         }
 
     }
-
-
-
     private void BuildTable() {
-//        int cols=15;
         ConceptsBySearch conceptsBySearch = new
                 ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
 
-        TableRow row = new TableRow(this);
-        row.setLayoutParams(new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+        TableRow currentMedicationRow = new TableRow(this);
+        currentMedicationRow.setLayoutParams(new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
-        Log.i("found_meds", conceptsBySearch.ConceptsWithObs("MEDICATION ADDED",patient.getUuid()).get(0));
+
+        TableRow stoppedMedicationRow = new TableRow(this);
+        currentMedicationRow.setLayoutParams(new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
 
         if(!conceptsBySearch.ConceptsWithObs("MEDICATION ADDED",patient.getUuid()).isEmpty()){
             HashMap<Integer,String> medication_added_hashMap = conceptsBySearch.ConceptsWithObs("MEDICATION ADDED", patient.getUuid());
@@ -90,16 +91,8 @@ public class MedicationSummaryActivity extends BaseActivity {
             HashMap<Integer,String> medication_mg_hashMap = conceptsBySearch.ConceptsWithObs("NUMBER OF MILLIGRAM",patient.getUuid());
             HashMap<Integer,String> medication_start_date = conceptsBySearch.ConceptsWithObs("HISTORICAL DRUG START DATE",patient.getUuid());
             HashMap<Integer,String> medication_stop_date = conceptsBySearch.ConceptsWithObs("HISTORICAL DRUG STOP DATE",patient.getUuid());
-
-            int countCurrent;
-            if(medication_stop_date != null){
-                countCurrent = medication_start_date.size() - medication_stop_date.size();
-            }else{
-                countCurrent = medication_start_date.size();
-            }
-            Log.i("found_meds_count", ""+countCurrent);
-
-            for(int i = countCurrent-1; i>=0; i--){
+            int medicationSize = medication_start_date.size();
+            for(int i = medicationSize-1; i>=0; i--){
                 if(medication_stop_date.get(i)==null){
                     TextView tvMed = new TextView(this);
                     tvMed.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
@@ -111,16 +104,42 @@ public class MedicationSummaryActivity extends BaseActivity {
                     }else{
                         tvMed.setTextColor(getResources().getColor(R.color.medTwo_text_color));
                     }
-                    tvMed.setText("\n " + medication_added_hashMap.get(i) + " \n" + medication_mg_hashMap.get(i) + " mg - " + medication_frequency_hashMap.get(i)+" \nStart Date: "+medication_start_date.get(i)+" \n");
-                    row.addView(tvMed);
-
+                    tvMed.setText("\n " + medication_added_hashMap.get(i) + " \n" + medication_mg_hashMap.get(i) + " mg - " + trimMed(medication_frequency_hashMap.get(i))+" \nStart Date: "+medication_start_date.get(i)+" \n");
+                    currentMedicationRow.addView(tvMed);
+                }else{
+                    TextView tvMed = new TextView(this);
+                    tvMed.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                            TableRow.LayoutParams.WRAP_CONTENT));
+                    tvMed.setBackgroundResource(R.drawable.cell_shape);
+                    tvMed.setGravity(Gravity.CENTER);
+                    if(i%2>0){
+                        tvMed.setTextColor(getResources().getColor(R.color.med_text_color));
+                    }else{
+                        tvMed.setTextColor(getResources().getColor(R.color.medTwo_text_color));
+                    }
+                    tvMed.setText("\n " + medication_added_hashMap.get(i) + " \n" + medication_mg_hashMap.get(i) + " mg - " + trimMed(medication_frequency_hashMap.get(i))+" \nStart Date: "+medication_start_date.get(i)+"\nStop Date: "+medication_stop_date.get(i));
+                    stoppedMedicationRow.addView(tvMed);
                 }
             }
-
-
         }
+        table_layoutCurrent.addView(currentMedicationRow);
+        table_layoutStopped.addView(stoppedMedicationRow);
+    }
 
-        table_layout.addView(row);
+    public String trimMed(String medication){
+        if(medication.contains("ONCE A DAY") ||medication.contains("EVENING")||medication.contains("MORNING")){
+            return "OD";
+        }else if(medication.contains("TWICE A DAY")){
+            return "BD";
+        }else if(medication.contains("THREE TIMES A DAY")){
+            return "TDS";
+        }else if(medication.contains("FOUR TIMES A DAY")){
+            return "QID";
+        }else if(medication.contains("AS NEEDED")){
+            return "PRN";
+        }else{
+           return medication;
+        }
     }
 
     private void notifyOfIdChange() {
@@ -155,8 +174,6 @@ public class MedicationSummaryActivity extends BaseActivity {
                     }).create().show();
         }
     }
-
-
 
     private void setupPatientMetadata() throws PatientController.PatientLoadException {
 
