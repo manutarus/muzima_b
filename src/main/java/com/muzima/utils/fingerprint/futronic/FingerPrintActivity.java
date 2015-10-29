@@ -345,10 +345,10 @@ public class FingerPrintActivity
         StringBuffer stringBuffer = new StringBuffer();
         if (bSuccess) {
             mHandler.obtainMessage(SHOW_MESSAGE, -1, -1, "Starting identification...").sendToTarget();
-            Vector<PatientFingerPrints> fingerPrintsVector = patientsFingerprintsRecords;
-            FtrIdentifyRecord[] rgRecords = new FtrIdentifyRecord[fingerPrintsVector.size()];
-            for (int iPatients = 0; iPatients < fingerPrintsVector.size(); iPatients++)
-                rgRecords[iPatients] = fingerPrintsVector.get(iPatients).getFtrIdentifyRecord();
+//            Vector<PatientFingerPrints> fingerPrintsVector = patientsFingerprintsRecords;
+            FtrIdentifyRecord[] rgRecords = new FtrIdentifyRecord[patientsFingerprintsRecords.size()];
+            for (int iPatients = 0; iPatients < patientsFingerprintsRecords.size(); iPatients++)
+                rgRecords[iPatients] = patientsFingerprintsRecords.get(iPatients).getFtrIdentifyRecord();
             FtrIdentifyResult result = new FtrIdentifyResult();
             nResult = ((FutronicIdentification) scanningOperation).Identification(rgRecords, result);
             if (nResult == FutronicSdkBase.RETCODE_OK) {

@@ -235,10 +235,17 @@ public class PatientSummaryActivity extends BaseActivity {
         startActivity(intent);
     }
     public void showSummaries(View v) {
-        ObsInterface.showSummary=true;
-        Intent intent = new Intent(this, SummaryActivity.class);
-        intent.putExtra(PATIENT, patient);
-        startActivity(intent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("No Summaries Found for display")
+                .setTitle("BIGPIC summaries Required")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.w(TAG, "No Summaries Found for display");
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
     public void showMedia(View v) {
 
