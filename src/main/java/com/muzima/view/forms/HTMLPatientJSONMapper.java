@@ -273,7 +273,7 @@ public class HTMLPatientJSONMapper {
         personAttributeType.setName("fingerprint");
         personAttribute.setAttributeType(personAttributeType);
         try {
-            personAttribute.setAttribute(new String(ObsInterface.fingerprintResultBytes, "US-ASCII"));
+            personAttribute.setAttribute(new String(ObsInterface.fingerprintResultBytes, "UTF8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
