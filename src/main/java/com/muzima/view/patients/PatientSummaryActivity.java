@@ -25,6 +25,7 @@ import com.muzima.R;
 import com.muzima.adapters.observations.ConceptsBySearch;
 import com.muzima.adapters.patients.PatientAdapterHelper;
 import com.muzima.api.model.Patient;
+import com.muzima.api.model.PatientIdentifier;
 import com.muzima.api.model.User;
 import com.muzima.controller.*;
 import com.muzima.service.JSONInputOutputToDisk;
@@ -68,6 +69,7 @@ public class PatientSummaryActivity extends BaseActivity {
             setupPatientMetadata();
             notifyOfIdChange();
             setMedication();
+            setSideEffects();
         } catch (PatientController.PatientLoadException e) {
             Toast.makeText(this, "An error occurred while fetching patient", Toast.LENGTH_SHORT).show();
             finish();
@@ -157,6 +159,8 @@ public class PatientSummaryActivity extends BaseActivity {
     public void setMedication(){
 //        current meds
         ObsInterface.medicationAddedList.clear();
+        ObsInterface.patientIdTypes.clear();
+        ObsInterface.patientIdValues.clear();
         ObsInterface.medicationFrequencyList.clear();
         ObsInterface.medicationDoseList.clear();
         ObsInterface.medicationStartDateList.clear();
@@ -166,6 +170,13 @@ public class PatientSummaryActivity extends BaseActivity {
         ObsInterface.medicationStoppedDoseList.clear();
         ObsInterface.medicationStoppedStartDateList.clear();
         ObsInterface.medicationStoppedStopDateList.clear();
+
+        //        patient.getid
+        for(PatientIdentifier patientIdentifiers: patient.getIdentifiers()){
+            ObsInterface.patientIdTypes.add(patientIdentifiers.getIdentifierType().getName().toString());
+            ObsInterface.patientIdValues.add(patientIdentifiers.getIdentifier().toString());
+            Log.i("DownAgain",patientIdentifiers.getIdentifierType().getName().toString() );
+        }
 
         ConceptsBySearch conceptsBySearch = new
                 ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
@@ -200,6 +211,24 @@ public class PatientSummaryActivity extends BaseActivity {
             ObsInterface.medicationFrequencyList.add("");
             ObsInterface.medicationDoseList.add("");
             ObsInterface.medicationStartDateList.add("");
+        }
+    }
+
+    public void setSideEffects(){
+        ObsInterface.sideEffectsList.clear();
+        ConceptsBySearch conceptsBySearch = new
+                ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
+        HashMap<Integer,String> side_effects_hashMap = conceptsBySearch.ConceptsWithObs("ALLERGY REACTION FROM DRUGS", patient.getUuid());
+        int count = side_effects_hashMap.size();
+        if(count>0){
+            for(int i = count-1; i>=0; i--) {
+                if ((!ObsInterface.sideEffectsList.contains(side_effects_hashMap.get(i)))) {
+                    ObsInterface.sideEffectsList.add(side_effects_hashMap.get(i));
+                    Log.i("allergies ",side_effects_hashMap.get(i));
+                }
+            }
+        } else{
+            ObsInterface.sideEffectsList.add("");
         }
     }
 

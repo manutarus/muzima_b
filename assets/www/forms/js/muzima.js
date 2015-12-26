@@ -908,7 +908,7 @@ $(document).ready(function () {
             /* Start - Checking that the user entered location exists in the list of possible locations */
             $.validator.addMethod("validLocationOnly", function(value, element) {
                 if ($.fn.isNotRequiredAndEmpty(value, element)) return true;
-                var locationEnteredByUser = $('#encounter\\.location_id').val();
+                var locationEnteredByUser = $('#location_id_inpatient').val();
                 for (var i = 0; i < listOfLocations.length; i++) {
                     if (locationEnteredByUser == listOfLocations[i].label) {
                         return true;
@@ -978,9 +978,21 @@ $(document).ready(function () {
     $.fn.stoppedMedicationsStopDate = function () {
         return jQuery.parseJSON(imagingComponent.getStoppedMedicationStopDate());
     };
-
     //get phone number
     $.fn.currentPhoneNumber = function () {
         return jQuery.parseJSON(imagingComponent.getCurrentPhoneNumber());
+    };
+
+    //get ID Types
+    $.fn.patientIDTypes = function () {
+        return jQuery.parseJSON(imagingComponent.getPatientIDTypes());
+    };
+    //get ID Values
+    $.fn.patientIDValues = function () {
+        return jQuery.parseJSON(imagingComponent.getPatientIDValues());
+    };
+    //get Side effect
+    $.fn.historicalSideEffects = function () {
+        return jQuery.parseJSON(imagingComponent.getHistoricalSideEffects());
     };
 });
