@@ -982,6 +982,10 @@ $(document).ready(function () {
     $.fn.currentPhoneNumber = function () {
         return jQuery.parseJSON(imagingComponent.getCurrentPhoneNumber());
     };
+    //get phone number
+    $.fn.currentCareLocation = function () {
+        return jQuery.parseJSON(imagingComponent.getCurrentCareLocation());
+    };
 
     //get ID Types
     $.fn.patientIDTypes = function () {

@@ -70,6 +70,7 @@ public class PatientSummaryActivity extends BaseActivity {
             notifyOfIdChange();
             setMedication();
             setSideEffects();
+            setCareLocation();
         } catch (PatientController.PatientLoadException e) {
             Toast.makeText(this, "An error occurred while fetching patient", Toast.LENGTH_SHORT).show();
             finish();
@@ -224,11 +225,24 @@ public class PatientSummaryActivity extends BaseActivity {
             for(int i = count-1; i>=0; i--) {
                 if ((!ObsInterface.sideEffectsList.contains(side_effects_hashMap.get(i)))) {
                     ObsInterface.sideEffectsList.add(side_effects_hashMap.get(i));
-                    Log.i("allergies ",side_effects_hashMap.get(i));
                 }
             }
         } else{
             ObsInterface.sideEffectsList.add("");
+        }
+    }
+    public void setCareLocation(){
+        ObsInterface.currentCareLocation ="";
+        ConceptsBySearch conceptsBySearch = new
+                ConceptsBySearch(((MuzimaApplication) this.getApplicationContext()).getObservationController(),"","");
+        HashMap<Integer,String> locationHashMap = conceptsBySearch.ConceptsWithObs("LOCATION OF CARE", patient.getUuid());
+        int count = locationHashMap.size();
+        if(count>0){
+            for(int i = count-1; i>=0; i--) {
+                if ((!ObsInterface.sideEffectsList.contains(locationHashMap.get(i)))) {
+                    ObsInterface.currentCareLocation = locationHashMap.get(i);
+                }
+            }
         }
     }
 

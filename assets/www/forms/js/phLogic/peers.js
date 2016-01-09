@@ -1,5 +1,7 @@
 $(document).ready(function () {
     var age = ""+$.fn.getAgeInYears($('#patient\\.birth_date').val());
+    $('#patient_care_still').val($.fn.currentCareLocation());
+    $('#linked_to').val($.fn.currentCareLocation());
     var yearsMonths = age.split('.');
     $('#age').val(yearsMonths[0] +" Years");
     var dateFormat = "dd-mm-yy";
@@ -165,6 +167,63 @@ $(document).ready(function () {
         {"val": "6679^ABACAVIR AND LAMIVUDINE^99DCT", "label": "ABC 60 and 3TC 30 (ABACAVIR AND LAMIVUDINE)"},
         {"val": "630^COMBIVIR JR^99DCT", "label": "3TC 30 and ZDV 60 (COMBIVIR JR)"},
         {"val": "6156^RALTEGRAVIR^99DCT", "label": "RALTEGRAVIR 400mg (RALTEGRAVIR)"}];
+
+    //init arv
+    $('#arv_drug_init').autocomplete({
+        source: arvDrugs,
+        create: function (event, ui) {
+            var drug_val = $('input[name="arv_drug_init"]').val();
+            $.each(arvDrugs, function (i, elem) {
+                if (elem.val == drug_val) {
+                    $('#arv_drug_init').val(elem.label)
+                }
+            });
+        },
+        select: function (event, ui) {
+            $('input[name="arv_drug_init"]').val(ui.item.val);
+            $('#arv_drug_init').val(ui.item.label);
+            return false;
+        }
+    });
+
+    $('#arv_drug_1_init').autocomplete({
+        source: arvDrugs,
+        create: function (event, ui) {
+            var drug_val = $('input[name="arv_drug_1_init"]').val();
+            $.each(arvDrugs, function (i, elem) {
+                if (elem.val == drug_val) {
+                    $('#arv_drug_1_init').val(elem.label)
+                }
+            });
+        },
+        select: function (event, ui) {
+            $('input[name="arv_drug_1_init"]').val(ui.item.val);
+            $('#arv_drug_1_init').val(ui.item.label);
+            return false;
+        }
+    });
+
+    $('#arv_drug_2_init').autocomplete({
+        source: arvDrugs,
+        create: function (event, ui) {
+            var drug_val = $('input[name="arv_drug_2_init"]').val();
+            $.each(arvDrugs, function (i, elem) {
+                if (elem.val == drug_val) {
+                    $('#arv_drug_2_init').val(elem.label)
+                }
+            });
+        },
+        select: function (event, ui) {
+            $('input[name="arv_drug_2_init"]').val(ui.item.val);
+            $('#arv_drug_2_init').val(ui.item.label);
+            return false;
+        }
+    });
+
+    //end init ARV
+
+
+
     $('#arv_drug').autocomplete({
         source: arvDrugs,
         create: function (event, ui) {
@@ -226,6 +285,36 @@ $(document).ready(function () {
         select: function (event, ui) {
             $('input[name="arv_drug_3"]').val(ui.item.val);
             $('#arv_drug_3').val(ui.item.label);
+            return false;
+        }
+    }); $('#changing_regime_from').autocomplete({
+        source: arvDrugs,
+        create: function (event, ui) {
+            var drug_val = $('input[name="changing_regime_from"]').val();
+            $.each(arvDrugs, function (i, elem) {
+                if (elem.val == drug_val) {
+                    $('#changing_regime_from').val(elem.label)
+                }
+            });
+        },
+        select: function (event, ui) {
+            $('input[name="changing_regime_from"]').val(ui.item.val);
+            $('#changing_regime_from').val(ui.item.label);
+            return false;
+        }
+    });$('#changing_regime_to').autocomplete({
+        source: arvDrugs,
+        create: function (event, ui) {
+            var drug_val = $('input[name="changing_regime_to"]').val();
+            $.each(arvDrugs, function (i, elem) {
+                if (elem.val == drug_val) {
+                    $('#changing_regime_to').val(elem.label)
+                }
+            });
+        },
+        select: function (event, ui) {
+            $('input[name="changing_regime_to"]').val(ui.item.val);
+            $('#changing_regime_to').val(ui.item.label);
             return false;
         }
     });
@@ -428,7 +517,7 @@ $(document).ready(function () {
             $.each(divField, function (index, object) {
                 $(object).change(function () {
                     var divToShowVal = $(this).val();
-                    if (divToShowVal == '1065^YES^99DCT') {
+                    if (divToShowVal == '1066^NO^99DCT') {
                         $('#basis_reason').show();
                     } else {
                         $('#basis_reason').hide();
@@ -437,6 +526,51 @@ $(document).ready(function () {
                 $(object).trigger('change');
             });
 
+        }else if(elementId=='care_linked'){
+//                current_visit_type
+            $.each(divField, function (index, object) {
+                $(object).change(function () {
+                    var divToShowVal = $(this).val();
+                    if (divToShowVal == '1065^YES^99DCT') {
+                        $('#linkedToCare').show();
+                        $('#reasons_not_linked').hide();
+                    }else if (divToShowVal == '1066^NO^99DCT') {
+                        $('#reasons_not_linked').show();
+                        $('#linkedToCare').hide();
+                    } else {
+                        $('#linkedToCare').hide();
+                        $('#reasons_not_linked').hide();
+                    }
+                });
+                $(object).trigger('change');
+            });
+
+        }else if(elementId=='change_treatment'){
+//                change treatment
+            $.each(divField, function (index, object) {
+                $(object).change(function () {
+                    var divToShowVal = $(this).val();
+                    if (divToShowVal == '1065^YES^99DCT') {
+                        $('#medication_change').show();
+                    } else {
+                        $('#medication_change').hide();
+                    }
+                });
+                $(object).trigger('change');
+            });
+        } else if(elementId=='reasons_regime_change'){
+//                reasons regime change
+            $.each(divField, function (index, object) {
+                $(object).change(function () {
+                    var divToShowVal = $(this).val();
+                    if (divToShowVal == 'other') {
+                        $('#other_reason_change_regime').show();
+                    } else {
+                        $('#other_reason_change_regime').hide();
+                    }
+                });
+                $(object).trigger('change');
+            });
         }else if(elementId=='encounter\\.location_id_select'){
 //                encounter.location_id_select
             $.each(divField, function (index, object) {
@@ -500,6 +634,8 @@ $(document).ready(function () {
         }
     };
     toggleDivById('encounter\\.provider_id_select');
+    toggleDivById('change_treatment');
+    toggleDivById('reasons_regime_change');
     toggleDivById('side_effects');
     toggleDivById('encounter\\.location_id_select');
     toggleDivById('location_id_inpatient');
@@ -511,6 +647,7 @@ $(document).ready(function () {
     toggleDivById('confirmed_test');
     toggleDivById('within_ampath_area');
     toggleDivById('defaulted');
+    toggleDivById('care_linked');
 
     var otherSelect = function (selectedElement) {
         var divField = $("select[name='reasons']");
@@ -871,11 +1008,18 @@ $(document).ready(function () {
     var toggleCheckBox = function () {
         var objectArray = {
             "#on_ios_treatment": "#ios_treatment",
+            "#service_change_io": "#service_change_io_div",
+            "#service_init_oi": "#service_init_oi_div",
             "#ios_treatment_other": "#other_ios",
             "#sideEffect_other": "#other_sideEffect",
+            "#other_se_reporting": "#other_se",
+            "#other_services": "#other_service",
+            "#service_side_effect_reporting": "#side_effect_reporting",
+            "#sideEffect_other_identified": "#other_sideEffect_identified",
             "#service_refill": "#ois_refilled",
             "#service_refill_OIS": "#other_ios_medication",
             "#service_change_regime": "#change_regime",
+            "#treatment_initiation": "#treatment_init",
             "#arvSelect": "#arvSelectToShow",
             "#tb_treatment": "#tb_drugs",
             "#tb_rhze": "#rhze_fre_div",
@@ -890,6 +1034,7 @@ $(document).ready(function () {
             "#tb_ref": "#pcin_fre_div",
             "#tb_inh": "#inh_fre_div",
             "#defaulted_basis_other": "#other_basis",
+            "#service_side_effect_identification": "#side_identification_identification",
             "#defaulted_basis_medication": "#meds_missed"
 
         };
@@ -995,6 +1140,32 @@ $(document).ready(function () {
                         $divToShow.show();
                     } else {
                         $divToShow.hide();
+                    }
+                });
+                $(object).trigger('change');
+            });
+
+        }else if(elementId=='current_visit_type'){
+            $.each(divField, function (index, object) {
+                $(object).change(function () {
+                    var divToShowVal = $(this).val();
+                    if (divToShowVal != "") {
+                        $('#general').show();
+                    } else {
+                        $('#general').hide();
+                    }
+                });
+                $(object).trigger('change');
+            });
+
+        }else if(elementId=='encounter_quiz'){
+            $.each(divField, function (index, object) {
+                $(object).change(function () {
+                    var divToShowVal = $(this).val();
+                    if (divToShowVal != "") {
+                        $('#contact_method').show();
+                    } else {
+                        $('#contact_method').hide();
                     }
                 });
                 $(object).trigger('change');
@@ -1218,6 +1389,8 @@ $(document).ready(function () {
     toggleById('ampath_location_select');
     toggleById('refering_patient');
     toggleById('refering_patient_second_visit');
+    toggleById('current_visit_type');
+    toggleById('encounter_quiz');
 
     $('#ampath_out_patient_location').autocomplete({
         source: outPatientCareLocation,
@@ -1316,6 +1489,43 @@ $(document).ready(function () {
         }
     });$noSelect.trigger('change');
 
+    var $noSelectLocation = $('.noSelectLocation');
+    $noSelectLocation.change(function () {
+        var divToShowVal = $(this).val();
+        if (divToShowVal == '1066^NO^99DCT') {
+            if(($(this).is(':checked'))){
+                $('#noSectionCareLocation').show();
+            }
+            else{
+                $('#noSectionCareLocation').hide();
+            }
+        }else{
+            $('#noSectionCareLocation').hide();
+        }
+    });$noSelectLocation.trigger('change');
+
+    var $changeLocation = $('.changeLocation');
+    $changeLocation.change(function () {
+        var divToShowVal = $(this).val();
+        if (divToShowVal == '1065^YES^99DCT') {
+            if(($(this).is(':checked'))){
+                $('#changeCareLocation').show();
+            }
+            else{
+                $('#changeCareLocation').hide();
+            }
+        }else if (divToShowVal == '1066^NO^99DCT') {
+            if(($(this).is(':checked'))){
+                $('#changeCareLocation').hide();
+            }
+            else{
+                $('#changeCareLocation').hide();
+            }
+        }else{
+            $('#changeCareLocation').hide();
+        }
+    });$changeLocation.trigger('change');
+
     $('#patient\\.phone_number').val($.fn.currentPhoneNumber());
     if($('#patient\\.phone_number').val() == ''){
         $('#current_phone_number').hide();
@@ -1331,19 +1541,19 @@ $(document).ready(function () {
         $("#current_ids").append(dynamicContent);
     };
 
+    var assignPatientIds  = function () {
+        var patientIdTypes = $.fn.patientIDTypes();
+        var patientIdValues = $.fn.patientIDValues();
+        $.each(patientIdTypes, function(index, value) {
+            generateTableForIds(value,patientIdValues[index])
+        });
+    };assignPatientIds();
+
     var generateHistoricalSideEffects = function(value) {
         var dynamicContent =
             '<tr><td>'+value+'</td></tr>';
         $("#historical_side_effects").append(dynamicContent);
     };
-
-    var assignPatientIds  = function () {
-        var patientIdTypes = $.fn.patientIDTypes();
-        var patientIdValues = $.fn.patientIDValues();
-        $.each(patientIdTypes, function(index, value) {
-            generateTableForIds(value,patientIdValues[index]);
-        });
-    };assignPatientIds();
 
     var historicalSideEffects  = function () {
         var historicalSideEffects = $.fn.historicalSideEffects();
@@ -1352,4 +1562,47 @@ $(document).ready(function () {
         });
     };historicalSideEffects();
 
+
+
+
+    var toggleCheckBox = function () {
+        var objectArray = {
+            "#add_phone_number_alternate": "#alternative_pone"
+        };
+        $.each(objectArray, function (k, v) {
+            $(k).change(function () {
+                if ($(k).is(':checked')) {
+                    $(v).show();
+                } else {
+                    $(v).hide();
+                }
+            });
+            $(k).trigger('change');
+        })
+    };
+    toggleCheckBox();
+
+    var toggleById2 = function (elementId) {
+        var divField = $("#"+elementId);
+        if(elementId=='patient\\.relationship_to_phone_owner') {
+            $.each(divField, function (index, object) {
+                $(object).change(function () {
+                    var divToShowVal = $(this).val();
+                    if (divToShowVal == 'Other') {
+                        $('#other_relation').show();
+                    }  else {
+                        $('#other_relation').hide();
+                    }
+                });
+                $(object).trigger('change');
+            });
+        }
+
+    }
+    toggleById2('patient\\.relationship_to_phone_owner');
+
+    /* Start - Custom repeating element */
+    $('.custom-repeat')
+        .append("<input class='btn btn-primary add-section pull-left' type='button' value='+'/>")
+        .append("<input class='btn btn-primary remove-section pull-right' type='button' value='-'/><span class='clear'></span>");
 });

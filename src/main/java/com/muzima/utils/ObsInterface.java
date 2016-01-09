@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class ObsInterface {
     public static String currentPhoneNumber = new String();
+    public static String currentCareLocation = new String();
     public static Patient patient = new Patient();
     public static List<String> medicationAddedList = new ArrayList<String>();
     public static List<String> medicationStoppedList = new ArrayList<String>();
