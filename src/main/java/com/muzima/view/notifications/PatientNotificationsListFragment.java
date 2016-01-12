@@ -30,6 +30,7 @@ public class PatientNotificationsListFragment extends NotificationListFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+//        get patient list
         if (listAdapter == null) {
             listAdapter = new PatientNotificationsAdapter(getActivity(), R.layout.item_notifications_list, notificationController, patient);
         }

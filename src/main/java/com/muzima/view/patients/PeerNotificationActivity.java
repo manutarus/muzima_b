@@ -16,12 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
@@ -114,56 +109,6 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
         if (isNotificationsList)
             searchServerBtn.setVisibility(View.GONE);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.client_list, menu);
-        searchView = (SearchView) menu.findItem(R.id.search)
-                .getActionView();
-        searchView.setQueryHint("Search clients");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                searchString = s;
-                activateRemoteAfterThreeCharacterEntered(s);
-                patientAdapter.search(s.trim());
-                return true;
-            }
-        });
-
-        if (quickSearch) {
-            searchView.setIconified(false);
-            searchView.requestFocus();
-        } else
-            searchView.setIconified(true);
-
-        menubarSyncButton = menu.findItem(R.id.menu_load);
-
-        if (isNotificationsList) {
-            menubarSyncButton.setVisible(true);
-            searchView.setVisibility(View.GONE);
-        } else {
-            menubarSyncButton.setVisible(false);
-            searchView.setVisibility(View.VISIBLE);
-        }
-
-        super.onCreateOptionsMenu(menu);
-        return true;
-    }
-
-    private void activateRemoteAfterThreeCharacterEntered(String searchString) {
-        if (searchString.trim().length() < 3) {
-            searchServerBtn.setVisibility(View.GONE);
-        } else {
-            searchServerBtn.setVisibility(View.VISIBLE);
-        }
-    }
-
     // Confirmation dialog for confirming if the patient have an existing ID
     private void callConfirmationDialog() {
 
@@ -197,41 +142,6 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
                 startActivity(new Intent(PeerNotificationActivity.this, RegistrationFormsActivity.class));
             }
         };
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_client_add: {
-                ObsInterface.registration=true;
-                callConfirmationDialog();
-                return true;
-            }
-
-            case R.id.scan:
-                invokeBarcodeScan();
-                return true;
-
-            case R.id.fingerprint: {
-                ObsInterface.registration=false;
-                invokeFingerprintScan();
-                return true;
-            }
-            case R.id.menu_load:
-                if (notificationsSyncInProgress) {
-                    Toast.makeText(this, "Action not allowed while sync is in progress", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                if (!NetworkUtils.isConnectedToNetwork(this)) {
-                    Toast.makeText(this, "No connection found, please connect your device and try again", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                syncAllNotificationsInBackgroundService();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override

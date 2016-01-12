@@ -94,6 +94,7 @@
     <string name="title_activity_form_webview">Form</string>
     <string name="title_activity_notice_list">Notice List</string>
     <string name="title_activity_client_summary">Client Summary</string>
+    <string name="title_activity_client_notification">Patient Notification</string>
     <string name="title_activity_client_observations">Client Observations</string>
     <string name="title_activity_client_encounters">Client Encounters</string>
     <string name="title_activity_encounter_summary">Observations</string>
@@ -250,7 +251,7 @@
     <string name="notifications">Notifications</string>
     <string name="title_activity_notification_list">Notifications</string>
     <string name="title_activity_notification">Notification</string>
-    <string name="no_notification_available">No Notifications Available</string>
+    <string name="no_notification_available">Net flix</string>
     <string name="no_notification_available_tip">Make sure you have connectivity to server and press the load button</string>
     <string name="new_notification_image">New Notification</string>
     <string name="title_activity_image">Add Image</string>
