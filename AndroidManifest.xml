@@ -214,7 +214,15 @@
                     android:value="com.muzima.view.ClientListActivity"/>
         </activity>
         <activity
-                android:name=".view.patients.PeerNotificationActivity"
+                android:name=".view.patients.PeerNotificationActionActivity"
+                android:configChanges="orientation|screenSize"
+                android:label="@string/title_activity_client_notification">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.muzima.view.ClientListActivity"/>
+        </activity>
+        <activity
+                android:name=".view.patients.PeerNotificationListActivity"
                 android:configChanges="orientation|screenSize"
                 android:label="@string/title_activity_client_notification">
             <meta-data

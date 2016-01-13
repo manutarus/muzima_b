@@ -48,7 +48,7 @@ import static com.muzima.utils.Constants.DataSyncServiceConstants;
 import static com.muzima.utils.Constants.DataSyncServiceConstants.SyncStatusConstants;
 import static com.muzima.utils.Constants.SEARCH_STRING_BUNDLE_KEY;
 
-public class PeerNotificationActivity extends BroadcastListenerActivity implements AdapterView.OnItemClickListener, ListAdapter.BackgroundListQueryTaskListener {
+public class PeerNotificationListActivity extends BroadcastListenerActivity implements AdapterView.OnItemClickListener, ListAdapter.BackgroundListQueryTaskListener {
     public static final String COHORT_ID = "cohortId";
     public static final String COHORT_NAME = "cohortName";
     public static final String QUICK_SEARCH = "quickSearch";
@@ -94,7 +94,7 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
         searchServerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PeerNotificationActivity.this, PatientRemoteSearchListActivity.class);
+                Intent intent = new Intent(PeerNotificationListActivity.this, PatientRemoteSearchListActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString(SEARCH_STRING_BUNDLE_KEY, searchString);
                 intent.putExtras(bundle);
@@ -102,17 +102,61 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
             }
         });
 
-        if (isNotificationsList)
-            searchServerBtn.setVisibility(View.GONE);
-        usbDeviceDataExchange = new UsbDeviceDataExchangeImpl(this, mHandler);
-
-        if (isNotificationsList)
-            searchServerBtn.setVisibility(View.GONE);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.client_list, menu);
+        searchView = (SearchView) menu.findItem(R.id.search)
+                .getActionView();
+        searchView.setQueryHint("Search clients");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                searchString = s;
+                activateRemoteAfterThreeCharacterEntered(s);
+                patientAdapter.search(s.trim());
+                return true;
+            }
+        });
+
+        if (quickSearch) {
+            searchView.setIconified(false);
+            searchView.requestFocus();
+        } else
+            searchView.setIconified(true);
+
+        menubarSyncButton = menu.findItem(R.id.menu_load);
+
+        if (isNotificationsList) {
+            menubarSyncButton.setVisible(true);
+            searchView.setVisibility(View.GONE);
+        } else {
+            menubarSyncButton.setVisible(false);
+            searchView.setVisibility(View.VISIBLE);
+        }
+
+        super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    private void activateRemoteAfterThreeCharacterEntered(String searchString) {
+        if (searchString.trim().length() < 3) {
+            searchServerBtn.setVisibility(View.GONE);
+        } else {
+            searchServerBtn.setVisibility(View.VISIBLE);
+        }
+    }
+
     // Confirmation dialog for confirming if the patient have an existing ID
     private void callConfirmationDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(PeerNotificationActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(PeerNotificationListActivity.this);
         builder
                 .setCancelable(true)
                 .setIcon(getResources().getDrawable(R.drawable.ic_warning))
@@ -139,9 +183,43 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
         return new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(PeerNotificationActivity.this, RegistrationFormsActivity.class));
+                startActivity(new Intent(PeerNotificationListActivity.this, RegistrationFormsActivity.class));
             }
         };
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_client_add: {
+                ObsInterface.registration=true;
+                callConfirmationDialog();
+                return true;
+            }
+
+            case R.id.scan:
+                invokeBarcodeScan();
+                return true;
+
+            case R.id.fingerprint: {
+                ObsInterface.registration=false;
+                invokeFingerprintScan();
+                return true;
+            }
+            case R.id.menu_load:
+                if (notificationsSyncInProgress) {
+                    Toast.makeText(this, "Action not allowed while sync is in progress", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                if (!NetworkUtils.isConnectedToNetwork(this)) {
+                    Toast.makeText(this, "No connection found, please connect your device and try again", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -187,7 +265,7 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         Patient patient = patientAdapter.getItem(position);
-        Intent intent = new Intent(this, PatientSummaryActivity.class);
+        Intent intent = new Intent(this, PeerNotificationActionActivity.class);
         intent.putExtra(PatientSummaryActivity.PATIENT, patient);
         startActivity(intent);
     }
@@ -213,10 +291,7 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
         int syncStatus = intent.getIntExtra(DataSyncServiceConstants.SYNC_STATUS, SyncStatusConstants.UNKNOWN_ERROR);
         int syncType = intent.getIntExtra(DataSyncServiceConstants.SYNC_TYPE, -1);
 
-        if (syncType == DataSyncServiceConstants.SYNC_NOTIFICATIONS) {
-            hideProgressbar();
-            onNotificationDownloadFinish();
-        }
+
     }
 
 
@@ -225,45 +300,8 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
         menubarSyncButton.setActionView(null);
     }
 
-    public void showProgressBar() {
-        menubarSyncButton.setActionView(R.layout.refresh_menuitem);
-    }
 
-    private void syncAllNotificationsInBackgroundService() {
-        notificationsSyncInProgress = true;
-        onNotificationDownloadStart();
-        showProgressBar();
 
-        User authenticatedUser = ((MuzimaApplication) getApplicationContext()).getAuthenticatedUser();
-        if (authenticatedUser != null) {
-            // get downloaded cohorts and sync obs and encounters
-            List<String> downloadedCohortsUuid = null;
-            List<Cohort> downloadedCohorts;
-            CohortController cohortController = ((MuzimaApplication) getApplicationContext()).getCohortController();
-            try {
-                downloadedCohorts = cohortController.getSyncedCohorts();
-                downloadedCohortsUuid = new ArrayList<String>();
-                for (Cohort cohort : downloadedCohorts) {
-                    downloadedCohortsUuid.add(cohort.getUuid());
-                }
-
-            } catch (CohortController.CohortFetchException e) {
-                e.printStackTrace();
-            }
-            new SyncNotificationsIntent(this, authenticatedUser.getPerson().getUuid(), getDownloadedCohortsArray(downloadedCohortsUuid)).start();
-        } else
-            Toast.makeText(this, "Error downloading notifications", Toast.LENGTH_SHORT).show();
-    }
-
-    private String[] getDownloadedCohortsArray(List<String> CohortUuids) {
-        return CohortUuids.toArray(new String[CohortUuids.size()]);
-    }
-
-    public void onNotificationDownloadFinish() {
-        notificationsSyncInProgress = false;
-        patientAdapter.reloadData();
-        //updateSyncText();
-    }
 
     public void onNotificationDownloadStart() {
         notificationsSyncInProgress = true;
@@ -310,7 +348,7 @@ public class PeerNotificationActivity extends BroadcastListenerActivity implemen
     }
 
     private void showMessageDialog(String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PeerNotificationActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(PeerNotificationListActivity.this);
         builder
                 .setCancelable(true)
                 .setIcon(getResources().getDrawable(R.drawable.ic_warning))

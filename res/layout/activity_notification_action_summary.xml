@@ -1,0 +1,133 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/DashboardTableContainer">
+
+    <RelativeLayout
+            style="@style/PatientDemographicsLayout"
+            android:background="@color/primary_black">
+
+        <TextView
+                android:id="@+id/patientName"
+                android:layout_alignParentLeft="true"
+                style="@style/DashboardMediumTitleText"/>
+
+        <ImageView
+                android:id="@+id/genderImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingTop="20dp"
+                android:contentDescription="Gender Image"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            style="@style/PatientDemographicsLayout"
+            android:paddingTop="4dp"
+            android:paddingBottom="16dp"
+            android:background="@color/primary_black" android:layout_height="85dp">
+
+        <TextView
+                android:id="@+id/phone"
+                style="@style/DashboardMediumTitleText"
+                android:layout_below="@+id/patientIdentifier"
+                android:layout_alignParentRight="true"/>
+
+        <TextView
+                android:id="@+id/dob"
+                style="@style/DashboardBaseText"/>
+
+        <TextView
+                android:id="@+id/alternate_phone"
+                style="@style/DashboardMediumTitleText"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/dob"/>
+
+        <TextView
+                android:id="@+id/patientIdentifier"
+                style="@style/DashboardBaseText"
+                android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <View style="@style/DividerLine"/>
+    <ScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:baselineAligned="false">
+
+
+                <RelativeLayout
+                        style="@style/ClickableGridItem"
+                        android:layout_weight="100"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="5dp"
+                        android:layout_height="80dp"
+                        android:baselineAligned="false"
+                        android:onClick="showSummaries">
+
+                    <TextView
+                            style="@style/DashboardListItemMediumHeadingText"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="@string/call_client">
+                    </TextView>
+
+                    <TextView
+                            android:id="@+id/summaryDescription"
+                            style="@style/DashboardItemDescription"
+                            android:layout_alignParentBottom="true"
+                            android:text="Patient promise to attend">
+                    </TextView>
+
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:baselineAligned="false">
+
+
+                <RelativeLayout
+                        style="@style/ClickableGridItem"
+                        android:layout_weight="100"
+                        android:orientation="horizontal"
+                        android:layout_height="80dp"
+                        android:baselineAligned="false"
+                        android:onClick="showForms">
+
+                    <TextView
+                            style="@style/DashboardListItemMediumHeadingText"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="@string/client_request_no_calls">
+                    </TextView>
+
+                    <TextView
+                            android:id="@+id/formDescription"
+                            style="@style/DashboardItemDescription"
+                            android:layout_alignParentBottom="true"
+                            android:text="Patient asked not to be called again">
+                    </TextView>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+
+
+   </LinearLayout>
+    </ScrollView>
+    <View style="@style/DividerLine"/>
+
+</LinearLayout>

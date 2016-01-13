@@ -31,8 +31,8 @@ import com.muzima.scheduler.RealTimeFormUploader;
 import com.muzima.view.cohort.CohortActivity;
 import com.muzima.view.forms.FormsActivity;
 import com.muzima.view.forms.RegistrationFormsActivity;
-import com.muzima.view.patients.PeerNotificationActivity;
 import com.muzima.view.patients.PatientsListActivity;
+import com.muzima.view.patients.PeerNotificationListActivity;
 import org.apache.lucene.queryParser.ParseException;
 
 import static com.muzima.utils.Constants.NotificationStatusConstants.NOTIFICATION_UNREAD;
@@ -130,7 +130,7 @@ public class MainActivity extends BroadcastListenerActivity {
      * Called when the user clicks the Notifications area
      */
     public void notificationsList(View view) {
-        Intent intent = new Intent(this, PeerNotificationActivity.class);
+        Intent intent = new Intent(this, PeerNotificationListActivity.class);
         startActivity(intent);
     }
 

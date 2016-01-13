@@ -20,6 +20,7 @@
     <string name="observations">Observations</string>
     <string name="clients">Clients</string>
     <string name="forms">Forms</string>
+    <string name="client_request_no_calls">Negative Response</string>
     <string name="notices">Notices</string>
     <string name="encounters">Encounters</string>
 
@@ -101,6 +102,7 @@
     <string name="title_login">Please Log In</string>
     <string name="title_activity_cohort_pref">Cohort Prefixes</string>
     <string name="summary">Medication Summary</string>
+    <string name="call_client">Patient called</string>
     <string name="media">Display Media</string>
     <string name="summaries_still_loading">Summaries are still loading</string>
 
