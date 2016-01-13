@@ -55,7 +55,6 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
     public static final String NOTIFICATIONS = "Notifications";
     public static boolean isNotificationsList = false;
     private MenuItem menubarSyncButton;
-    private boolean notificationsSyncInProgress;
 
     private ListView listView;
     private boolean quickSearch = false;
@@ -68,7 +67,6 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
     private Button searchServerBtn;
     private SearchView searchView;
     private boolean intentBarcodeResults = false;
-    private UsbDeviceDataExchangeImpl usbDeviceDataExchange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,74 +151,6 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
         }
     }
 
-    // Confirmation dialog for confirming if the patient have an existing ID
-    private void callConfirmationDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(PeerNotificationListActivity.this);
-        builder
-                .setCancelable(true)
-                .setIcon(getResources().getDrawable(R.drawable.ic_warning))
-                .setTitle(getResources().getString(R.string.confirm))
-                .setMessage(getResources().getString(R.string.patient_registration_id_card_question))
-                .setPositiveButton("Yes", yesClickListener())
-                .setNegativeButton("No", noClickListener()).create().show();
-
-
-    }
-
-    private Dialog.OnClickListener yesClickListener() {
-        return new Dialog.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                searchView.setIconified(false);
-                searchView.requestFocus();
-            }
-        };
-    }
-
-    private Dialog.OnClickListener noClickListener() {
-        return new Dialog.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(PeerNotificationListActivity.this, RegistrationFormsActivity.class));
-            }
-        };
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_client_add: {
-                ObsInterface.registration=true;
-                callConfirmationDialog();
-                return true;
-            }
-
-            case R.id.scan:
-                invokeBarcodeScan();
-                return true;
-
-            case R.id.fingerprint: {
-                ObsInterface.registration=false;
-                invokeFingerprintScan();
-                return true;
-            }
-            case R.id.menu_load:
-                if (notificationsSyncInProgress) {
-                    Toast.makeText(this, "Action not allowed while sync is in progress", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                if (!NetworkUtils.isConnectedToNetwork(this)) {
-                    Toast.makeText(this, "No connection found, please connect your device and try again", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -285,55 +215,6 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
     }
 
     @Override
-    protected void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-
-        int syncStatus = intent.getIntExtra(DataSyncServiceConstants.SYNC_STATUS, SyncStatusConstants.UNKNOWN_ERROR);
-        int syncType = intent.getIntExtra(DataSyncServiceConstants.SYNC_TYPE, -1);
-
-
-    }
-
-
-
-    public void hideProgressbar() {
-        menubarSyncButton.setActionView(null);
-    }
-
-
-
-
-    public void onNotificationDownloadStart() {
-        notificationsSyncInProgress = true;
-    }
-
-
-    public void invokeBarcodeScan() {
-        IntentIntegrator scanIntegrator = new IntentIntegrator(this);
-
-        scanIntegrator.initiateScan();
-    }
-
-    public void invokeFingerprintScan() {
-        try {
-            if (usbDeviceDataExchange.OpenDevice(0, true)) {
-                finish();
-                Intent i = new Intent(getApplicationContext(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
-                i.putExtra("action", 2);
-                startActivity(i);
-                finish();
-            } else {
-                if (!usbDeviceDataExchange.IsPendingOpen()) {
-                    showMessageDialog("Cannot start fingerprint operation.\n" +
-                            "Scanner device is not connected, please connect");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
 
 
@@ -344,43 +225,7 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
 
         }
 
-
     }
-
-    private void showMessageDialog(String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PeerNotificationListActivity.this);
-        builder
-                .setCancelable(true)
-                .setIcon(getResources().getDrawable(R.drawable.ic_warning))
-                .setTitle("Information")
-                .setMessage("" + msg)
-                .setNegativeButton("Ok", null).create().show();
-    }
-
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case UsbDeviceDataExchangeImpl.MESSAGE_ALLOW_DEVICE: {
-                    if (usbDeviceDataExchange.ValidateContext()) {
-                        if(!ObsInterface.registration) {
-                            Intent i = new Intent(getApplicationContext(), com.muzima.utils.fingerprint.futronic.FingerPrintActivity.class);
-                            i.putExtra("action", 2);
-                            startActivity(i);
-                        }
-                    } else {
-                        showMessageDialog("Cannot start fingerprint operation.\n" +
-                                "Scanner device is not connected, please connect");
-                    }
-                    break;
-                }
-                case UsbDeviceDataExchangeImpl.MESSAGE_DENY_DEVICE: {
-                    showMessageDialog("User deny scanner device patient");
-                    break;
-                }
-            }
-        }
-    };
 
 
 }

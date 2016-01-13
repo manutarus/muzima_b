@@ -46,11 +46,6 @@ import static com.muzima.utils.DateUtils.getFormattedDate;
 public class PeerNotificationActionActivity extends BaseActivity {
     private static final String TAG = "PatientSummaryActivity";
     public static final String PATIENT = "patient";
-    private static final String APP_EXTERNAL_DIR_ROOT =  Environment.getExternalStorageDirectory().getPath() + "/muzima";
-    public static final String APP_MEDIA_DIR = APP_EXTERNAL_DIR_ROOT + "/media";
-
-
-
     private Patient patient;
 
     @Override
@@ -155,37 +150,5 @@ public class PeerNotificationActionActivity extends BaseActivity {
         intent.putExtra(PATIENT, patient);
         startActivity(intent);
     }
-
-    public void showObservations(View v) {
-        ObsInterface.showSummary=false;
-        Intent intent = new Intent(this, ObservationsActivity.class);
-        intent.putExtra(PATIENT, patient);
-        startActivity(intent);
-    }
-
-    public void showEncounters(View v) {
-        Intent intent = new Intent(this, EncountersActivity.class);
-        intent.putExtra(PATIENT, patient);
-        startActivity(intent);
-    }
-    public void showSummaries(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("No Summaries Found for display")
-                .setTitle("BIGPIC summaries Required")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Log.w(TAG, "No Summaries Found for display");
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-
-
-
-
-
 
 }
