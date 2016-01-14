@@ -35,6 +35,7 @@ public class ObsInterface {
     public static byte[] fingerprintResultBytes;
     public static String base64Image;
     public static boolean showSummary = false;
+    public static boolean showNotification = false;
     public static boolean registration = false;
     public static String holdIdentifier = null;
 

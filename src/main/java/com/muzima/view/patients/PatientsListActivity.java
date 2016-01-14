@@ -78,6 +78,7 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ObsInterface.showNotification = false;
         setContentView(R.layout.activity_patient_list);
         Bundle intentExtras = getIntent().getExtras();
         if (intentExtras != null) {

@@ -8,7 +8,10 @@
 
 package com.muzima.controller;
 
+import android.content.Context;
 import android.util.Log;
+import com.muzima.MuzimaApplication;
+import com.muzima.adapters.observations.ConceptsBySearch;
 import com.muzima.api.model.CohortMember;
 import com.muzima.api.model.Patient;
 import com.muzima.api.model.PatientIdentifier;
@@ -57,6 +60,28 @@ public class PatientController {
         } catch (IOException e) {
             throw new PatientLoadException(e);
         }
+    }
+    public List<Patient> getAllPatientsFilter(Context context) throws PatientLoadException {
+//        patientsNotification = patientController.getAllPatients();
+        ConceptsBySearch conceptsBySearch = new
+                ConceptsBySearch(((MuzimaApplication) context.getApplicationContext()).getObservationController(),"","");
+        List<Patient> patients = null;
+        List<Patient> patientList = null;
+        try {
+//            return patientService.getAllPatients();
+            patients = patientService.getAllPatients();
+
+            for (Patient patient :patients){
+                if(!conceptsBySearch.ConceptsWithObs("SYSTOLIC BLOOD PRESSURE", patient.getUuid()).isEmpty()){
+                    Log.i("AS_I_DO_3",conceptsBySearch.ConceptsWithObs("SYSTOLIC BLOOD PRESSURE", patient.getUuid()).toString());
+                    patientList.add(patient);
+                }
+            }
+
+        } catch (IOException e) {
+            throw new PatientLoadException(e);
+        }
+        return patientList;
     }
 
     public int getTotalPatientsCount() throws PatientLoadException {

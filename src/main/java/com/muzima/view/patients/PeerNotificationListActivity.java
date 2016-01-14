@@ -71,6 +71,7 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ObsInterface.showNotification = true;
         setContentView(R.layout.activity_patient_list);
         Bundle intentExtras = getIntent().getExtras();
         if (intentExtras != null) {
@@ -88,17 +89,6 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
         setupNoDataView();
         setupListView(cohortId);
 
-        searchServerBtn = (Button) findViewById(R.id.search_server_btn);
-        searchServerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PeerNotificationListActivity.this, PatientRemoteSearchListActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(SEARCH_STRING_BUNDLE_KEY, searchString);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
 
     }
 
@@ -108,48 +98,10 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
         searchView = (SearchView) menu.findItem(R.id.search)
                 .getActionView();
         searchView.setQueryHint("Search clients");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                searchString = s;
-                activateRemoteAfterThreeCharacterEntered(s);
-                patientAdapter.search(s.trim());
-                return true;
-            }
-        });
-
-        if (quickSearch) {
-            searchView.setIconified(false);
-            searchView.requestFocus();
-        } else
-            searchView.setIconified(true);
-
-        menubarSyncButton = menu.findItem(R.id.menu_load);
-
-        if (isNotificationsList) {
-            menubarSyncButton.setVisible(true);
-            searchView.setVisibility(View.GONE);
-        } else {
-            menubarSyncButton.setVisible(false);
-            searchView.setVisibility(View.VISIBLE);
-        }
-
         super.onCreateOptionsMenu(menu);
         return true;
     }
 
-    private void activateRemoteAfterThreeCharacterEntered(String searchString) {
-        if (searchString.trim().length() < 3) {
-            searchServerBtn.setVisibility(View.GONE);
-        } else {
-            searchServerBtn.setVisibility(View.VISIBLE);
-        }
-    }
 
 
     @Override
@@ -216,7 +168,6 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
-
 
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, dataIntent);
         if (scanningResult != null) {

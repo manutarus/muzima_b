@@ -17,13 +17,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.muzima.MuzimaApplication;
 import com.muzima.adapters.ListAdapter;
+import com.muzima.adapters.observations.ConceptsBySearch;
 import com.muzima.api.model.Patient;
 import com.muzima.api.model.User;
 import com.muzima.controller.NotificationController;
 import com.muzima.controller.PatientController;
 import com.muzima.utils.Constants;
+import com.muzima.utils.ObsInterface;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
@@ -75,6 +78,7 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
         @Override
         protected List<Patient> doInBackground(String... params) {
             List<Patient> patients = null;
+            List<Patient> patientsNotification = null;
             if (isSearch(params)) {
                 try {
                     if (isNotificationsList) {
@@ -87,19 +91,37 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                 }
             }
 
-            String cohortUuid = params[0];
-            try {
-                if (cohortUuid != null) {
-                    patients = patientController.getPatients(cohortUuid);
-                } else if (isNotificationsList) {
-                    patients = filterPatientsWithNotifications(null);
-                } else {
-                    patients = patientController.getAllPatients();
+            if(ObsInterface.showNotification){
+                try {
+                    patientsNotification = patientController.getAllPatients();
+                    ConceptsBySearch conceptsBySearch = new
+                            ConceptsBySearch(((MuzimaApplication) context.getApplicationContext()).getObservationController(),"","");
+                    Iterator<Patient> patientIterator = patientsNotification.iterator();
+                    while (patientIterator.hasNext()) {
+                        Patient s = patientIterator.next();
+                        if(!conceptsBySearch.ConceptsWithObs("SYSTOLIC BLOOD PRESSURE", s.getUuid()).isEmpty()){
+                            patientIterator.remove();
+                        }
+                    }
+                } catch (PatientController.PatientLoadException e) {
+                    Log.w(TAG, "Exception occurred while fetching patients", e);
                 }
-            } catch (PatientController.PatientLoadException e) {
-                Log.w(TAG, "Exception occurred while fetching patients", e);
+                return patientsNotification;
+            }else{
+                String cohortUuid = params[0];
+                try {
+                    if (cohortUuid != null) {
+                        patients = patientController.getPatients(cohortUuid);
+                    } else if (isNotificationsList) {
+                        patients = filterPatientsWithNotifications(null);
+                    } else {
+                        patients = patientController.getAllPatients();
+                    }
+                } catch (PatientController.PatientLoadException e) {
+                    Log.w(TAG, "Exception occurred while fetching patients", e);
+                }
+                return patients;
             }
-            return patients;
         }
 
         private boolean isSearch(String[] params) {
