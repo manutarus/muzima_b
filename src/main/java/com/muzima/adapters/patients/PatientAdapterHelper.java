@@ -47,7 +47,7 @@ public class PatientAdapterHelper extends ListAdapter<Patient> {
         holder.dateOfBirth.setText("DOB: " + getFormattedDate(patient.getBirthdate()));
         holder.identifier.setText(patient.getIdentifier());
         if(patient.getAttribute("Contact Phone Number")!=null) {
-            holder.phone.setText("Tel3: "+patient.getAttribute("Contact Phone Number").getAttribute());
+            holder.phone.setText("Tel: "+patient.getAttribute("Contact Phone Number").getAttribute());
         }
         if(patient.getAttribute("Contact Phone Number")==null && patient.getAttribute("Alternative contact phone number")!=null) {
             holder.phone.setText("Alt: "+patient.getAttribute("Alternative contact phone number").getAttribute());

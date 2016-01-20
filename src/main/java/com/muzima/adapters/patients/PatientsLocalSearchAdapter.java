@@ -8,8 +8,10 @@
 
 package com.muzima.adapters.patients;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +26,12 @@ import com.muzima.controller.NotificationController;
 import com.muzima.controller.PatientController;
 import com.muzima.utils.Constants;
 import com.muzima.utils.ObsInterface;
+import org.joda.time.Days;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
     private static final String TAG = "PatientsLocalSearchAdapter";
@@ -75,6 +79,7 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
             patientAdapterHelper.onPreExecute(backgroundListQueryTaskListener);
         }
 
+        @TargetApi(Build.VERSION_CODES.GINGERBREAD)
         @Override
         protected List<Patient> doInBackground(String... params) {
             List<Patient> patients = null;
@@ -97,12 +102,53 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                     ConceptsBySearch conceptsBySearch = new
                             ConceptsBySearch(((MuzimaApplication) context.getApplicationContext()).getObservationController(),"","");
                     Iterator<Patient> patientIterator = patientsNotification.iterator();
+                    Map<Date, Patient> dateHashMap = new HashMap<Date, Patient>();
                     while (patientIterator.hasNext()) {
                         Patient s = patientIterator.next();
-                        if(!conceptsBySearch.ConceptsWithObs("SYSTOLIC BLOOD PRESSURE", s.getUuid()).isEmpty()){
+                        HashMap<Integer,String> returnDates = conceptsBySearch.ConceptsWithObs("RETURN VISIT DATE, DISPENSARY", s.getUuid());
+                        int count = returnDates.size();
+                        if(count>0){
+                            DateFormat oldFormatter = new SimpleDateFormat("dd-MM-yyyy");
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                            Date oldDate = null;
+                            Date todayDate = null;
+                            String today = sdf.format(new Date());
+                            try {
+                                oldDate = oldFormatter .parse(returnDates.get(count-1).substring(0,10));
+                                todayDate = oldFormatter .parse(today);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            if(daysBetween(oldDate,todayDate)<7){
+                                HashMap<Integer,String> returnResponse = conceptsBySearch.ConceptsWithObs("CALL RESPONSE", s.getUuid());
+                                if(returnResponse.size()>0){
+                                    for(int i = count-1; i>=0; i--){
+                                        if(returnResponse.get(i).contains("POSITIVE")){
+                                            dateHashMap.put(oldDate,s);
+                                        }else{
+                                            patientIterator.remove();
+                                        }
+                                    }
+                                }else{
+                                    dateHashMap.put(oldDate,s);
+                                }
+                            }
+                            else {
+                                patientIterator.remove();
+                            }
+                        }else{
                             patientIterator.remove();
                         }
                     }
+
+                    Map<Date, Patient> m1 = new TreeMap(dateHashMap).descendingMap();
+                    patientsNotification.clear();
+                    for (Map.Entry<Date, Patient> entry : m1.entrySet())
+                    {
+                        patientsNotification.add(entry.getValue());
+                        Log.i("LEA",entry.getKey().toString());
+                    }
+
                 } catch (PatientController.PatientLoadException e) {
                     Log.w(TAG, "Exception occurred while fetching patients", e);
                 }
@@ -123,6 +169,11 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                 return patients;
             }
         }
+
+        private long daysBetween(Date one, Date two) {
+            long difference = (one.getTime()-two.getTime())/86400000; return Math.abs(difference);
+        }
+
 
         private boolean isSearch(String[] params) {
             return params.length == 2 && SEARCH.equals(params[1]);

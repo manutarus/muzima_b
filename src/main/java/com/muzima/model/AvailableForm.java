@@ -12,6 +12,7 @@ import com.muzima.api.model.Tag;
 
 public class AvailableForm extends BaseForm {
     public static final String REGISTRATION = "registration";
+    public static final String PEERS = "peers";
     private Tag[] tags;
     private boolean isDownloaded;
 
@@ -37,6 +38,17 @@ public class AvailableForm extends BaseForm {
         }
         for (Tag tag : tags) {
             if(REGISTRATION.equalsIgnoreCase(tag.getName())){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isNotificationForm(){
+        if(tags == null){
+            return false;
+        }
+        for (Tag tag : tags) {
+            if(PEERS.equalsIgnoreCase(tag.getName())){
                 return true;
             }
         }

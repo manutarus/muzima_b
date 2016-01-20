@@ -489,6 +489,16 @@ public class FormController {
         }
         return result;
     }
+    public AvailableForms getDownloadedNotificationForms() throws FormFetchException {
+        AvailableForms result = new AvailableForms();
+
+        for (AvailableForm form : getAvailableFormByTags(null)) {
+            if (form.isDownloaded() && form.isNotificationForm()) {
+                result.add(form);
+            }
+        }
+        return result;
+    }
 
     public Patient createNewPatient(String data) {
         try {
