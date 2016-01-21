@@ -20,6 +20,7 @@
     <string name="observations">Observations</string>
     <string name="clients">Clients</string>
     <string name="forms">Forms</string>
+    <string name="patients_called">Called Patients</string>
     <string name="client_request_no_calls">Negative Response</string>
     <string name="notices">Notices</string>
     <string name="encounters">Encounters</string>
@@ -249,8 +250,8 @@
     </string>
     <string name="exit_app_message">Are you sure to log out and exit mUzima app?</string>
     <string name="filter_cohort_hint">Start typing to filter the cohorts...</string>
-
     <string name="notifications">Notifications</string>
+    <string name="due_patients">Due Patients</string>
     <string name="title_activity_notification_list">Notifications</string>
     <string name="title_activity_notification">Notification</string>
     <string name="no_notification_available">Net flix</string>

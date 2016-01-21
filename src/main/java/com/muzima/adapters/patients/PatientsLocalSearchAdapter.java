@@ -97,6 +97,7 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
             }
 
             if(ObsInterface.showNotification){
+
                 try {
                     patientsNotification = patientController.getAllPatients();
                     ConceptsBySearch conceptsBySearch = new
@@ -114,7 +115,7 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                             Date todayDate = null;
                             String today = sdf.format(new Date());
                             try {
-                                oldDate = oldFormatter .parse(returnDates.get(count-1).substring(0,10));
+                                oldDate = oldFormatter .parse(returnDates.get(0).substring(0,10));
                                 todayDate = oldFormatter .parse(today);
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -122,13 +123,13 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                             if(daysBetween(oldDate,todayDate)<7){
                                 HashMap<Integer,String> returnResponse = conceptsBySearch.ConceptsWithObs("CALL RESPONSE", s.getUuid());
                                 if(returnResponse.size()>0){
-                                    for(int i = count-1; i>=0; i--){
-                                        if(returnResponse.get(i).contains("POSITIVE")){
+//                                    for(int i = count-1; i>=0; i--){
+                                        if(returnResponse.get(0).contains("POSITIVE")){
                                             dateHashMap.put(oldDate,s);
                                         }else{
                                             patientIterator.remove();
                                         }
-                                    }
+//                                    }
                                 }else{
                                     dateHashMap.put(oldDate,s);
                                 }

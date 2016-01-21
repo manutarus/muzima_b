@@ -71,6 +71,7 @@ public class PatientSummaryActivity extends BaseActivity {
             setMedication();
             setSideEffects();
             setCareLocation();
+            setDemographics();
         } catch (PatientController.PatientLoadException e) {
             Toast.makeText(this, "An error occurred while fetching patient", Toast.LENGTH_SHORT).show();
             finish();
@@ -244,6 +245,16 @@ public class PatientSummaryActivity extends BaseActivity {
                 }
             }
         }
+    }
+    
+    public void setDemographics(){
+        ObsInterface.pUUID = patient.getUuid();
+        ObsInterface.pMedical_record_number= patient.getIdentifier();
+        ObsInterface.pFamily_name= patient.getFamilyName();
+        ObsInterface.pGiven_name= patient.getGivenName();
+        ObsInterface.pMiddle_name= patient.getMiddleName();
+        ObsInterface.pSex= patient.getGender();
+        ObsInterface.pBirth_date= patient.getBirthdate().toString();
     }
 
     @Override

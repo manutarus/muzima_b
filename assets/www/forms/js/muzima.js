@@ -999,4 +999,34 @@ $(document).ready(function () {
     $.fn.historicalSideEffects = function () {
         return jQuery.parseJSON(imagingComponent.getHistoricalSideEffects());
     };
+
+//    get demographics
+    //get phone number
+    $.fn.getUUID = function () {
+        return jQuery.parseJSON(imagingComponent.getUUID());
+    };
+
+    $.fn.getMedicalNumber = function () {
+        return jQuery.parseJSON(imagingComponent.getMedicalNumber());
+    };
+
+    $.fn.getFamilyName = function () {
+        return jQuery.parseJSON(imagingComponent.getFamilyName());
+    };
+
+     $.fn.getGivenName = function () {
+        return jQuery.parseJSON(imagingComponent.getGivenName());
+    };
+
+    $.fn.getMiddleName = function () {
+        return jQuery.parseJSON(imagingComponent.getMiddleName());
+    };
+
+    $.fn.getGender = function () {
+        return jQuery.parseJSON(imagingComponent.getGender());
+    };
+    $.fn.getBirthDay = function () {
+        return jQuery.parseJSON(imagingComponent.getBirthDay());
+    };
+
 });

@@ -30,105 +30,53 @@
                           android:layout_marginBottom="10dp"
                           android:layout_height="100dp"
                           android:baselineAligned="false">
-
-                <RelativeLayout style="@style/ClickableGridItem"
-                                android:layout_weight="50"
-                                android:orientation="vertical"
-                                android:onClick="cohortList">
-                    <TextView
-                            style="@style/DashboardListItemPrimaryText"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:text="@string/cohorts">
-                    </TextView>
-
-                    <TextView
-                            android:id="@+id/cohortDescription"
-                            android:layout_alignParentBottom="true"
-                            style="@style/DashboardItemDescription"
-                            android:text="## Synced, ## Total">
-                    </TextView>
-
-                </RelativeLayout>
-
-                <RelativeLayout style="@style/ClickableGridItem"
-                                android:layout_weight="50"
-                                android:onClick="patientList">
-
-                    <TextView
-                            style="@style/DashboardListItemPrimaryText"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:text="@string/clients">
-                    </TextView>
-
-                    <TextView
-                            android:id="@+id/patientDescription"
-                            style="@style/DashboardItemDescription"
-                            android:layout_alignParentBottom="true"
-                            android:text="## Synced">
-                    </TextView>
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout android:layout_width="fill_parent"
-                          android:weightSum="100"
-                          android:layout_marginTop="10dp"
-                          android:layout_marginBottom="10dp"
-                          android:layout_height="100dp"
-                          android:baselineAligned="false">
-
                 <RelativeLayout
                         style="@style/ClickableGridItem"
                         android:layout_weight="50"
                         android:layout_marginRight="10dp"
                         android:paddingRight="10dp"
-                        android:onClick="formsList">
+                        android:onClick="notificationsPatientList">
 
                     <TextView
                             style="@style/DashboardListItemPrimaryText"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="left"
-                            android:text="@string/forms">
-                    </TextView>
-
-                    <TextView
-                            android:id="@+id/formDescription"
-                            style="@style/DashboardItemDescription"
-                            android:layout_alignParentBottom="true"
-                            android:text="## Incomplete, ## Outbox">
-                    </TextView>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                        style="@style/ClickableGridItem"
-                        android:layout_weight="50"
-                        android:layout_marginRight="10dp"
-                        android:paddingRight="10dp"
-                        android:onClick="notificationsList">
-
-                    <TextView
-                            style="@style/DashboardListItemPrimaryText"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="left"
-                            android:text="@string/notifications">
+                            android:text="@string/due_patients">
                     </TextView>
 
                     <TextView
                             android:id="@+id/notificationDescription"
-                            style="@style/DashboardItemDescription"
-                            android:layout_alignParentBottom="true"
-                            android:text="## Inbox, ## Outbox">
+                            style="@style/DashboardItemDescription">
+                    </TextView>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                        style="@style/ClickableGridItem"
+                        android:layout_weight="50"
+                        android:layout_marginRight="10dp"
+                        android:paddingRight="10dp"
+                        android:onClick="notificationsPatientDueList">
+
+                    <TextView
+                            style="@style/DashboardListItemPrimaryText"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="left"
+                            android:text="@string/patients_called">
+                    </TextView>
+
+                    <TextView
+                            android:id="@+id/formDescription"
+                            style="@style/DashboardItemDescription">
                     </TextView>
 
                 </RelativeLayout>
 
             </LinearLayout>
+
+
         </LinearLayout>
     </ScrollView>
 

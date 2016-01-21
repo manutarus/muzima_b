@@ -19,6 +19,14 @@ import java.util.List;
 public class ObsInterface {
     public static String currentPhoneNumber = new String();
     public static String currentCareLocation = new String();
+    public static String pUUID = new String();
+    public static String pMedical_record_number= new String();
+    public static String pFamily_name= new String();
+    public static String pGiven_name= new String();
+    public static String pMiddle_name= new String();
+    public static String pSex= new String();
+    public static String pBirth_date= new String();
+
     public static Patient patient = new Patient();
     public static List<String> medicationAddedList = new ArrayList<String>();
     public static List<String> medicationStoppedList = new ArrayList<String>();
@@ -35,6 +43,7 @@ public class ObsInterface {
     public static byte[] fingerprintResultBytes;
     public static String base64Image;
     public static boolean showSummary = false;
+    public static boolean showCalledPatients = false;
     public static boolean showNotification = false;
     public static boolean registration = false;
     public static String holdIdentifier = null;
