@@ -252,6 +252,7 @@
     <string name="filter_cohort_hint">Start typing to filter the cohorts...</string>
     <string name="notifications">Notifications</string>
     <string name="due_patients">Due Patients</string>
+    <string name="missed_visits">Missed Visits</string>
     <string name="title_activity_notification_list">Notifications</string>
     <string name="title_activity_notification">Notification</string>
     <string name="no_notification_available">Net flix</string>

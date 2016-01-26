@@ -63,5 +63,9 @@ public class PeerNotificationMainActivity extends BaseActivity {
         Intent intent = new Intent(this, PeerNotificationListActivity.class);
         startActivity(intent);
     }
+    public void missedVisitsList(View view) {
+        Intent intent = new Intent(this, PatientsListActivity.class);
+        startActivity(intent);
+    }
 
 }

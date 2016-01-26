@@ -121,18 +121,44 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                                 e.printStackTrace();
                             }
                             if(daysBetween(oldDate,todayDate)<7){
-                                HashMap<Integer,String> returnResponse = conceptsBySearch.ConceptsWithObs("CALL RESPONSE", s.getUuid());
-                                if(returnResponse.size()>0){
-//                                    for(int i = count-1; i>=0; i--){
+                                if(!ObsInterface.showCalledPatients){
+                                    HashMap<Integer,String> returnResponse = conceptsBySearch.ConceptsWithObs("CALL RESPONSE", s.getUuid());
+                                    HashMap<Integer,String> calledDates = conceptsBySearch.ConceptsWithObs("DATE CALLED BY PEER", s.getUuid());
+
+                                    if(calledDates.size()>0){
+                                        patientIterator.remove();
+
+                                    }else {
+                                        if(returnResponse.size()>0){
+                                            if(returnResponse.get(0).contains("POSITIVE")){
+                                                dateHashMap.put(oldDate,s);
+                                            }else{
+                                                patientIterator.remove();
+                                            }
+                                        }else{
+                                            dateHashMap.put(oldDate,s);
+                                        }
+
+                                    }
+
+
+                                }else if(ObsInterface.showCalledPatients){
+                                    HashMap<Integer,String> returnResponse = conceptsBySearch.ConceptsWithObs("CALL RESPONSE", s.getUuid());
+                                    HashMap<Integer,String> calledDates = conceptsBySearch.ConceptsWithObs("DATE CALLED BY PEER", s.getUuid());
+
+                                    if(returnResponse.size()>0){
                                         if(returnResponse.get(0).contains("POSITIVE")){
                                             dateHashMap.put(oldDate,s);
                                         }else{
                                             patientIterator.remove();
                                         }
-//                                    }
-                                }else{
-                                    dateHashMap.put(oldDate,s);
+                                    }else{
+                                        dateHashMap.put(oldDate,s);
+                                    }
+
                                 }
+
+
                             }
                             else {
                                 patientIterator.remove();
