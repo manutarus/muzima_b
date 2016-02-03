@@ -396,8 +396,6 @@ public class PatientsListActivity extends BroadcastListenerActivity implements A
             searchView.setQuery(scanningResult.getContents(), false);
 
         }
-
-
     }
 
     private void showMessageDialog(String msg) {

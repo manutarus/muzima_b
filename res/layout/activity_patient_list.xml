@@ -15,7 +15,6 @@
             android:gravity="center"
             android:paddingRight="16dp"
             android:visibility="gone">
-
         <TextView
                 android:id="@+id/no_data_msg"
                 android:layout_width="match_parent"

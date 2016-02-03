@@ -150,6 +150,17 @@ public class PeerNotificationListActivity extends BroadcastListenerActivity impl
         Intent intent = new Intent(this, PeerNotificationActionActivity.class);
         intent.putExtra(PatientSummaryActivity.PATIENT, patient);
         startActivity(intent);
+        setDemographics(patient);
+    }
+
+    public void setDemographics(Patient patient){
+        ObsInterface.pUUID = patient.getUuid();
+        ObsInterface.pMedical_record_number= patient.getIdentifier();
+        ObsInterface.pFamily_name= patient.getFamilyName();
+        ObsInterface.pGiven_name= patient.getGivenName();
+        ObsInterface.pMiddle_name= patient.getMiddleName();
+        ObsInterface.pSex= patient.getGender();
+        ObsInterface.pBirth_date= patient.getBirthdate().toString();
     }
 
     @Override

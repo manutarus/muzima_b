@@ -7,6 +7,7 @@ $(document).ready(function () {
     var dateFormat = "dd-mm-yy";
     var currentDate = $.datepicker.formatDate(dateFormat, new Date());
     var encounterDatetime = $('#encounter\\.encounter_datetime');
+    $('#called_date').val(currentDate);
     if ($(encounterDatetime).val() == "") {
         $(encounterDatetime).val(currentDate);
     }
@@ -1171,6 +1172,19 @@ $(document).ready(function () {
                 $(object).trigger('change');
             });
 
+        }else if(elementId=='reminder_period'){
+            $.each(divField, function (index, object) {
+                $(object).change(function () {
+                    var divToShowVal = $(this).val();
+                    if (divToShowVal == "1107^NONE^99DCT") {
+                        $('#basis_duration').show();
+                    } else {
+                        $('#basis_duration').hide();
+                    }
+                });
+                $(object).trigger('change');
+            });
+
         }else if(elementId=='within_ampath_catchment'){
 //                within_ampath_catchment
             $.each(divField, function (index, object) {
@@ -1199,27 +1213,6 @@ $(document).ready(function () {
                     var divToShowVal = $(this).val();
                     var $divToShow = $(this).closest('.section').find('.knwn_and_within_ampath_catchment');
                     var $divToShow2 = $(this).closest('.section').find('.not_within_ampath_catchment');
-                    if (divToShowVal == '1065^YES^99DCT') {
-                        $divToShow.show();
-                        $divToShow2.hide();
-                    }else if (divToShowVal == '1066^NO^99DCT') {
-                        $divToShow2.show();
-                        $divToShow.hide();
-                    } else {
-                        $divToShow.hide();
-                        $divToShow2.hide();
-                    }
-                });
-                $(object).trigger('change');
-            });
-
-        }else if(elementId=='patient_been_discharged'){
-//                patient_hiv_status_visit_one
-            $.each(divField, function (index, object) {
-                $(object).change(function () {
-                    var divToShowVal = $(this).val();
-                    var $divToShow = $(this).closest('.section').find('.patient_been_discharged_quiz');
-                    var $divToShow2 = $(this).closest('.section').find('.patient_been_discharged_no_quiz');
                     if (divToShowVal == '1065^YES^99DCT') {
                         $divToShow.show();
                         $divToShow2.hide();
@@ -1375,12 +1368,12 @@ $(document).ready(function () {
         }
     };
     toggleById('first_visit');
+    toggleById('reminder_period');
     toggleById('patient_hiv_status_visit_one');
     toggleById('patient_been_tested');
     toggleById('confirmed_test_in_wards');
     toggleById('within_ampath_catchment');
     toggleById('knwn_ampath_patient');
-    toggleById('patient_been_discharged');
     toggleById('tested_at_the_ward');
     toggleById('patient_been_tested_check');
     toggleById('tetsed_while_in_ward');
@@ -1472,7 +1465,7 @@ $(document).ready(function () {
         return day + "-" + month + "-" + year;
     };
     $('#return_date_initial').val($.returnDate(parseInt(14)));
-    $('#return_date_followUP').val($.returnDate(parseInt(30)));
+    //$('#return_date_followUP').val($.returnDate(parseInt(30)));
 
     var $noSelect = $('.noSelect');
     $noSelect.change(function () {
@@ -1567,7 +1560,8 @@ $(document).ready(function () {
 
     var toggleCheckBox = function () {
         var objectArray = {
-            "#add_phone_number_alternate": "#alternative_pone"
+            "#add_phone_number_alternate": "#alternative_pone",
+            "#discharged": "#patient_been_discharged_quiz"
         };
         $.each(objectArray, function (k, v) {
             $(k).change(function () {

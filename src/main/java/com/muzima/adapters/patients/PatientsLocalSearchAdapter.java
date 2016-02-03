@@ -97,74 +97,69 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
             }
 
             if(ObsInterface.showNotification){
-
                 try {
                     patientsNotification = patientController.getAllPatients();
                     ConceptsBySearch conceptsBySearch = new
                             ConceptsBySearch(((MuzimaApplication) context.getApplicationContext()).getObservationController(),"","");
                     Iterator<Patient> patientIterator = patientsNotification.iterator();
                     Map<Date, Patient> dateHashMap = new HashMap<Date, Patient>();
+                    Patient s;
                     while (patientIterator.hasNext()) {
-                        Patient s = patientIterator.next();
-                        HashMap<Integer,String> returnDates = conceptsBySearch.ConceptsWithObs("RETURN VISIT DATE, DISPENSARY", s.getUuid());
-                        int count = returnDates.size();
-                        if(count>0){
-                            DateFormat oldFormatter = new SimpleDateFormat("dd-MM-yyyy");
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                            Date oldDate = null;
-                            Date todayDate = null;
-                            String today = sdf.format(new Date());
-                            try {
-                                oldDate = oldFormatter .parse(returnDates.get(0).substring(0,10));
-                                todayDate = oldFormatter .parse(today);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            if(daysBetween(oldDate,todayDate)<7){
-                                if(!ObsInterface.showCalledPatients){
-                                    HashMap<Integer,String> returnResponse = conceptsBySearch.ConceptsWithObs("CALL RESPONSE", s.getUuid());
-                                    HashMap<Integer,String> calledDates = conceptsBySearch.ConceptsWithObs("DATE CALLED BY PEER", s.getUuid());
+                        s =patientIterator.next();
+                        HashMap<Integer,String> discharged= conceptsBySearch.ConceptsWithObs("DISCHARGE STATUS", s.getUuid());
+                        if(discharged.size()>0){
+                            HashMap<Integer,String> reminderStatus = conceptsBySearch.ConceptsWithObs("REMINDER PERIOD", s.getUuid());
+                            int countStatus =reminderStatus.size();
+                            if(countStatus>0){
+                                if(!reminderStatus.get(0).contains("NONE")){
+                                    HashMap<Integer,String> dischargedDates= conceptsBySearch.ConceptsWithObs("RETURN VISIT DATE, DISPENSARY", s.getUuid());
+                                    int countDates = dischargedDates.size();
+                                    if(countDates > 0){
+                                        DateFormat oldFormatter = new SimpleDateFormat("dd-MM-yyyy");
+                                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                                        Date returnDate = null;
+                                        Date todayDate = null;
+                                        String today = sdf.format(new Date());
+                                        try {
+                                            returnDate = oldFormatter .parse(dischargedDates.get(0).substring(0,10));
+                                            todayDate = oldFormatter .parse(today);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        if(new Date().before(returnDate)){
+                                            if(reminderStatus.get(0).contains("7 DAYS BEFORE")){
+                                                Log.i("TESTING_DATE",s.getDisplayName());
+                                                if(daysBetween(returnDate,todayDate)<7){
+                                                    HashMap<Integer,String> notReached = conceptsBySearch.ConceptsWithObs("REASON NOT REACHED", s.getUuid());
 
-                                    if(calledDates.size()>0){
-                                        patientIterator.remove();
+                                                    int notReachedCount = notReached.size();
+                                                    if(notReachedCount>0){
+                                                        if(notReached.get(0).contains("WRONG NUMBER") || notReachedCount>3) {
+                                                            patientIterator.remove();
+                                                        }else{
+                                                            dateHashMap.put(returnDate,s);
+                                                        }
 
-                                    }else {
-                                        if(returnResponse.size()>0){
-                                            if(returnResponse.get(0).contains("POSITIVE")){
-                                                dateHashMap.put(oldDate,s);
+                                                    }else{
+                                                        dateHashMap.put(returnDate,s);
+                                                    }
+
+                                                }else{
+                                                    patientIterator.remove();
+                                                }
                                             }else{
-                                                patientIterator.remove();
+                                                if(daysBetween(returnDate,todayDate)<2){
+                                                    dateHashMap.put(returnDate,s);
+                                                }else{
+                                                    patientIterator.remove();
+                                                }
                                             }
-                                        }else{
-                                            dateHashMap.put(oldDate,s);
                                         }
 
-                                    }
-
-
-                                }else if(ObsInterface.showCalledPatients){
-                                    HashMap<Integer,String> returnResponse = conceptsBySearch.ConceptsWithObs("CALL RESPONSE", s.getUuid());
-                                    HashMap<Integer,String> calledDates = conceptsBySearch.ConceptsWithObs("DATE CALLED BY PEER", s.getUuid());
-
-                                    if(returnResponse.size()>0){
-                                        if(returnResponse.get(0).contains("POSITIVE")){
-                                            dateHashMap.put(oldDate,s);
-                                        }else{
-                                            patientIterator.remove();
-                                        }
-                                    }else{
-                                        dateHashMap.put(oldDate,s);
                                     }
 
                                 }
-
-
                             }
-                            else {
-                                patientIterator.remove();
-                            }
-                        }else{
-                            patientIterator.remove();
                         }
                     }
 
@@ -245,3 +240,4 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
         TextView identifier;
     }
 }
+//TODO- check concept date to count the mteja times
