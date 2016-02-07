@@ -41,6 +41,7 @@ public class ObservationsPagerAdapter extends MuzimaPagerAdapter implements Sear
         pagers[TAB_BY_DATE] = new PagerView("By Concepts", observationByDateListFragment);
         pagers[TAB_BY_ENCOUNTERS] = new PagerView("By Encounters", observationByEncountersFragment);
 
+
     }
 
     @Override

@@ -25,25 +25,8 @@ public class PeerNotificationMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_dashboard);
-//        Bundle intentExtras = getIntent().getExtras();
-//        if (intentExtras != null) {
-//            patient = (Patient) intentExtras.getSerializable(PATIENT);
-//            ObsInterface.patient = patient;
-//        }
-//        setDemographics();
-
-
     }
 
-    public void setDemographics(){
-        ObsInterface.pUUID = patient.getUuid();
-        ObsInterface.pMedical_record_number= patient.getIdentifier();
-        ObsInterface.pFamily_name= patient.getFamilyName();
-        ObsInterface.pGiven_name= patient.getGivenName();
-        ObsInterface.pMiddle_name= patient.getMiddleName();
-        ObsInterface.pSex= patient.getGender();
-        ObsInterface.pBirth_date= patient.getBirthdate().toString();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

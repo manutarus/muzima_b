@@ -128,19 +128,25 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                                         }
                                         if(new Date().before(returnDate)){
                                             if(reminderStatus.get(0).contains("7 DAYS BEFORE")){
-                                                Log.i("TESTING_DATE",s.getDisplayName());
                                                 if(daysBetween(returnDate,todayDate)<7){
                                                     HashMap<Integer,String> notReached = conceptsBySearch.ConceptsWithObs("REASON NOT REACHED", s.getUuid());
-
                                                     int notReachedCount = notReached.size();
                                                     if(notReachedCount>0){
-                                                        if(notReached.get(0).contains("WRONG NUMBER") || notReachedCount>3) {
+                                                        if(notReached.get(0).contains("WRONG NUMBER")) {
                                                             patientIterator.remove();
                                                         }else{
-                                                            dateHashMap.put(returnDate,s);
+                                                            HashMap<Integer,String> mtejaWithNotification =
+                                                                    conceptsBySearch.ConceptsWithObsWithinNotification("REASON NOT REACHED", s.getUuid(),7);
+                                                            if(mtejaWithNotification.size()<4) {
+                                                                Log.i("TESTING_DATE 1",s.getDisplayName());
+                                                                dateHashMap.put(returnDate, s);
+                                                            }else{
+                                                                patientIterator.remove();
+                                                            }
                                                         }
 
                                                     }else{
+                                                        Log.i("TESTING_DATE 2",s.getDisplayName());
                                                         dateHashMap.put(returnDate,s);
                                                     }
 
