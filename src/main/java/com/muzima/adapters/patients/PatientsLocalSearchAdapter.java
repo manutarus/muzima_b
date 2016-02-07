@@ -21,13 +21,17 @@ import com.muzima.MuzimaApplication;
 import com.muzima.adapters.ListAdapter;
 import com.muzima.adapters.observations.ConceptsBySearch;
 import com.muzima.api.model.Patient;
+import com.muzima.api.model.PersonAttribute;
+import com.muzima.api.model.PersonAttributeType;
 import com.muzima.api.model.User;
 import com.muzima.controller.NotificationController;
 import com.muzima.controller.PatientController;
 import com.muzima.utils.Constants;
 import com.muzima.utils.ObsInterface;
 import org.joda.time.Days;
+import org.json.JSONException;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -71,7 +75,15 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
         this.backgroundListQueryTaskListener = backgroundListQueryTaskListener;
     }
 
+    private PersonAttribute getDisplayColor() {
+        PersonAttribute personAttribute = new PersonAttribute();
+        PersonAttributeType personAttributeType =new PersonAttributeType();
+        personAttributeType.setName("called");
+        personAttribute.setAttributeType(personAttributeType);
+        personAttribute.setAttribute("YES");
+        return personAttribute;
 
+    }
     private class BackgroundQueryTask extends AsyncTask<String, Void, List<Patient>> {
 
         @Override
@@ -97,6 +109,7 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
             }
 
             if(ObsInterface.showNotification){
+
                 try {
                     patientsNotification = patientController.getAllPatients();
                     ConceptsBySearch conceptsBySearch = new
@@ -138,6 +151,10 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                                                             HashMap<Integer,String> mtejaWithNotification =
                                                                     conceptsBySearch.ConceptsWithObsWithinNotification("REASON NOT REACHED", s.getUuid(),7);
                                                             if(mtejaWithNotification.size()<4) {
+                                                                ObsInterface.flag=true;
+                                                                List<PersonAttribute> attributes = s.getAtributes();
+                                                                attributes.add(getDisplayColor());
+                                                                s.setAttributes(attributes);
                                                                 Log.i("TESTING_DATE 1",s.getDisplayName());
                                                                 dateHashMap.put(returnDate, s);
                                                             }else{
@@ -146,6 +163,7 @@ public class PatientsLocalSearchAdapter extends ListAdapter<Patient> {
                                                         }
 
                                                     }else{
+                                                        ObsInterface.flag=false;
                                                         Log.i("TESTING_DATE 2",s.getDisplayName());
                                                         dateHashMap.put(returnDate,s);
                                                     }

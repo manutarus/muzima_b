@@ -1,5 +1,6 @@
 package com.muzima.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -26,6 +27,7 @@ public class ObsInterface {
     public static String pMiddle_name= new String();
     public static String pSex= new String();
     public static String pBirth_date= new String();
+    public static boolean flag = false;
 
     public static Patient patient = new Patient();
     public static List<String> medicationAddedList = new ArrayList<String>();
